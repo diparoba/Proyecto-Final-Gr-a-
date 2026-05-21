@@ -12,9 +12,13 @@ from machine import UART, Pin
 # LED de Estado en GPIO 2 (Enciende cuando procesa una petición web)
 led = Pin(2, Pin.OUT)
 
-# UART 2 para comunicación con Arduino Nano
-# RX = 16, TX = 17 (Conectado a RX D0 del Nano) a 9600 baudios
+# UART 2 para comunicación bidireccional con Arduino Nano
+# RX = 16, TX = 17 (Conectado a TX D1 y RX D0 del Nano respectivamente) a 9600 baudios
 uart = UART(2, baudrate=9600, tx=17, rx=16)
+
+# Variable global para almacenar la última telemetría recibida de Arduino
+# Se inicializa con una plantilla por defecto por si el Arduino aún no envía datos
+latest_telemetry = '{"mode":"INACTIVO","cx":512,"cy":512,"cz":512,"pCarro":0.0,"pElev":0.0,"pGiro":0.0,"mCarro":"DETENIDO","mElev":"DETENIDO","mGiro":"DETENIDO"}'
 
 # 2. Función para renderizar la Interfaz Web (HTML)
 def render_html():
@@ -25,7 +29,35 @@ def render_html():
     except Exception as e:
         return "<h1>Error: No se encontro index.html</h1>"
 
-# 3. Corrutina Asíncrona: Manejador de Peticiones Web
+# 3. Tarea Asíncrona: Lectura continua de telemetría desde UART
+async def read_telemetry():
+    global latest_telemetry
+    print("Iniciando tarea asíncrona de telemetría (UART2)...")
+    buffer = ""
+    while True:
+        try:
+            if uart.any():
+                # Leer bytes disponibles
+                chunk = uart.read(uart.any())
+                if chunk:
+                    # Decodificar omitiendo caracteres inválidos
+                    buffer += chunk.decode('utf-8', 'ignore')
+                    
+                    # Extraer líneas completas separadas por salto de línea
+                    while "\n" in buffer:
+                        line, buffer = buffer.split("\n", 1)
+                        line = line.strip()
+                        
+                        # Validación de paquete JSON básico
+                        if line.startswith("{") and line.endswith("}"):
+                            latest_telemetry = line
+        except Exception as e:
+            # Ignorar fallos de decodificación o tramas incompletas
+            pass
+        # Pequeña pausa no bloqueante de 50ms para ceder control del CPU
+        await asyncio.sleep_ms(50)
+
+# 4. Corrutina Asíncrona: Manejador de Peticiones Web
 async def handle_client(reader, writer):
     try:
         led.value(1) # Encender LED de estado
@@ -49,7 +81,11 @@ async def handle_client(reader, writer):
             # Enviar el carácter por el puerto serial al Arduino Nano
             uart.write(comando)
             # Para peticiones de control (Fetch API), respondemos rápido y sin HTML
-            response = "HTTP/1.1 200 OK\r\nConnection: close\r\n\r\nOK"
+            response = "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\nOK"
+            
+        elif "GET /telemetry " in request:
+            # Devolver los datos de telemetría en formato JSON con cabecera CORS
+            response = f"HTTP/1.1 200 OK\r\nContent-Type: application/json\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\n{latest_telemetry}"
             
         elif "GET / " in request:
             # Si el usuario entra a la ruta principal, le entregamos la página web
@@ -71,13 +107,17 @@ async def handle_client(reader, writer):
         writer.close()
         await writer.wait_closed()
 
-# 4. Bucle Principal del Servidor
+# 5. Bucle Principal del Servidor
 async def main():
     print("Iniciando Servidor Web en el puerto 80...")
-    # '0.0.0.0' permite que cualquiera en la red local pueda conectarse
+    
+    # Iniciar la corrutina de lectura de telemetría en segundo plano
+    asyncio.create_task(read_telemetry())
+    
+    # Iniciar el servidor web asíncrono
     server = await asyncio.start_server(handle_client, "0.0.0.0", 80)
     
-    # Bucle infinito para mantener el ESP32 encendido y escuchando
+    # Mantener el bucle vivo
     while True:
         await asyncio.sleep(1)
 

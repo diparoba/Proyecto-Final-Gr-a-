@@ -2,100 +2,680 @@
 <html lang="es">
 <head>
     <!--
-    Interfaz de Control Remoto de la Grúa Torre.
-    Página web servida por el ESP32. Utiliza Fetch API para enviar comandos HTTP GET 
-    de manera asíncrona al servidor sin recargar la página.
-    Diseñada para ser responsiva y orientada a pantallas táctiles (móviles).
+    TorreGrúa Telemetría y Control Remoto.
+    Página web servida por el ESP32.
+    Utiliza Fetch API para enviar comandos y recibir telemetría de forma asíncrona.
+    Maquetación responsiva con diseño oscuro premium, glassmorphism,
+    gráficos animados en tiempo real mediante SVGs y depurador de mandos analógicos.
     -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Control de Grúa Torre</title>
+    <title>Telemetría y Control - Grúa Torre</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
-        /* Diseño "Control Remoto" optimizado para Móviles */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            text-align: center; 
-            background-color: #1a252f; 
-            color: #ecf0f1;
-            margin: 0; 
-            padding: 10px;
-            /* Prevenir selecciones de texto accidentales en móviles */
-            user-select: none; 
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(22, 30, 49, 0.75);
+            --border-color: rgba(255, 255, 255, 0.08);
+            
+            --carro-color: #00bcd4;
+            --carro-glow: rgba(0, 188, 212, 0.4);
+            
+            --elev-color: #ff9800;
+            --elev-glow: rgba(255, 152, 0, 0.4);
+            
+            --giro-color: #9c27b0;
+            --giro-glow: rgba(156, 39, 176, 0.4);
+            
+            --stop-color: #f44336;
+            --stop-glow: rgba(244, 67, 54, 0.4);
+            
+            --success-color: #4caf50;
+            --text-primary: #ffffff;
+            --text-secondary: #8f9cae;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+            user-select: none;
             -webkit-user-select: none;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(156, 39, 176, 0.12) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(0, 188, 212, 0.12) 0px, transparent 50%);
+            background-attachment: fixed;
         }
-        h2 { margin-bottom: 5px; }
-        .panel { 
-            background: #2c3e50; 
-            padding: 20px; 
-            border-radius: 15px; 
-            max-width: 350px; 
-            margin: 15px auto; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+
+        header {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
         }
-        h3 { 
-            margin-top: 0; 
-            font-size: 16px; 
-            color: #bdc3c7; 
-            text-transform: uppercase; 
+
+        header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            margin: 0;
+            font-size: 24px;
+            background: linear-gradient(135deg, #00bcd4, #9c27b0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
-        .btn { 
-            padding: 20px 10px; 
-            font-size: 18px; 
-            margin: 5px; 
-            cursor: pointer; 
-            border: none; 
-            border-radius: 10px; 
-            font-weight: bold;
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.03);
+            padding: 6px 14px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: var(--stop-color);
+            box-shadow: 0 0 10px var(--stop-color);
+            transition: background-color 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .status-dot.connected {
+            background-color: var(--success-color);
+            box-shadow: 0 0 10px var(--success-color);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 25px;
+        }
+
+        @media(min-width: 900px) {
+            .main-container {
+                grid-template-columns: 420px 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin: 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            padding-bottom: 10px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .control-group h3 {
+            margin: 0;
+            font-size: 13px;
+            font-weight: 600;
+            color: #b0bec5;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 8px;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 14px;
+            border: none;
+            border-radius: 12px;
             color: white;
-            /* Optimización táctil: Deshabilita el zoom al tocar dos veces */
-            touch-action: manipulation; 
-            transition: transform 0.1s, opacity 0.1s;
+            cursor: pointer;
+            touch-action: manipulation;
+            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-        
-        /* Paleta de colores para los distintos motores */
-        .btn-carro { background-color: #2980b9; width: 45%; }
-        .btn-elev { background-color: #d35400; width: 45%; }
-        .btn-giro { background-color: #8e44ad; width: 45%; }
-        .btn-stop { background-color: #c0392b; width: 95%; margin-top: 10px;}
-        
-        /* Efecto de presionado */
-        .btn:active { transform: scale(0.95); opacity: 0.8; }
+
+        .btn-carro {
+            background: linear-gradient(135deg, #00acc1, #00838f);
+            border: 1px solid rgba(0, 188, 212, 0.2);
+        }
+        .btn-carro:hover {
+            box-shadow: 0 0 15px var(--carro-glow);
+        }
+        .btn-carro:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 8px var(--carro-glow);
+        }
+
+        .btn-elev {
+            background: linear-gradient(135deg, #fb8c00, #ef6c00);
+            border: 1px solid rgba(255, 152, 0, 0.2);
+        }
+        .btn-elev:hover {
+            box-shadow: 0 0 15px var(--elev-glow);
+        }
+        .btn-elev:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 8px var(--elev-glow);
+        }
+
+        .btn-giro {
+            background: linear-gradient(135deg, #8e24aa, #6a1b9a);
+            border: 1px solid rgba(156, 39, 176, 0.2);
+        }
+        .btn-giro:hover {
+            box-shadow: 0 0 15px var(--giro-glow);
+        }
+        .btn-giro:active {
+            transform: scale(0.96);
+            box-shadow: 0 0 8px var(--giro-glow);
+        }
+
+        .btn-stop {
+            background: linear-gradient(135deg, #e53935, #c62828);
+            border: 1px solid rgba(244, 67, 54, 0.3);
+            width: 100%;
+            padding: 18px;
+            font-size: 16px;
+            letter-spacing: 0.5px;
+        }
+        .btn-stop:hover {
+            box-shadow: 0 0 20px var(--stop-glow);
+        }
+        .btn-stop:active {
+            transform: scale(0.97);
+            box-shadow: 0 0 10px var(--stop-glow);
+        }
+
+        .btn-label {
+            font-size: 10px;
+            font-weight: 500;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Telemetría */
+        .telemetry-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .mode-badge {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+
+        .mode-badge.web {
+            background: rgba(0, 188, 212, 0.15);
+            border-color: var(--carro-color);
+            color: var(--carro-color);
+            box-shadow: 0 0 10px rgba(0, 188, 212, 0.2);
+        }
+
+        .mode-badge.joystick {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: var(--success-color);
+            color: var(--success-color);
+            box-shadow: 0 0 10px rgba(76, 175, 80, 0.2);
+        }
+
+        .mode-badge.inactivo {
+            background: rgba(143, 156, 174, 0.1);
+            border-color: var(--text-secondary);
+            color: var(--text-secondary);
+        }
+
+        .visualizers {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media(min-width: 600px) {
+            .visualizers {
+                grid-template-columns: 1fr 200px;
+            }
+        }
+
+        .viz-box {
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
+        .viz-box-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            align-self: flex-start;
+        }
+
+        /* SVG Glow */
+        .svg-glow {
+            filter: drop-shadow(0 0 4px rgba(0, 188, 212, 0.5));
+        }
+        .svg-glow-elev {
+            filter: drop-shadow(0 0 4px rgba(255, 152, 0, 0.5));
+        }
+
+        /* Indicadores */
+        .indicators-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        @media(min-width: 600px) {
+            .indicators-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .ind-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .ind-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .ind-val {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .ind-state {
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            letter-spacing: 0.5px;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0%;
+            border-radius: 3px;
+            transition: width 0.2s ease-out;
+        }
+
+        .pb-carro { background: var(--carro-color); box-shadow: 0 0 8px var(--carro-glow); }
+        .pb-elev { background: var(--elev-color); box-shadow: 0 0 8px var(--elev-glow); }
+
+        /* Depurador Joysticks */
+        .joystick-debugger {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .joy-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 12px;
+        }
+
+        .joy-name {
+            width: 80px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .joy-track {
+            flex: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .joy-center {
+            position: absolute;
+            left: 50%;
+            top: -2px;
+            width: 2px;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .joy-fill {
+            position: absolute;
+            height: 100%;
+            background: linear-gradient(90deg, #9c27b0, #00bcd4);
+            border-radius: 4px;
+            left: 50%;
+            width: 0%;
+        }
+
+        .joy-val {
+            width: 35px;
+            text-align: right;
+            font-family: monospace;
+            font-weight: bold;
+            color: #b0bec5;
+        }
     </style>
 </head>
 <body>
-    <h2>Grúa Torre</h2>
-    <p style="margin-top: 0; color: #95a5a6; font-size: 14px;">Panel de Control Web Remoto</p>
-    
-    <!-- PANEL 1: MOVIMIENTO DEL CARRO -->
-    <div class="panel">
-        <h3>Carro</h3>
-        <!-- Eventos pointer unifican mouse y touch para enviar comandos de forma continua -->
-        <button class="btn btn-carro" onpointerdown="iniciar('/forward')" onpointerup="detener()" onpointerleave="detener()">⬆️ Adelante</button>
-        <button class="btn btn-carro" onpointerdown="iniciar('/backward')" onpointerup="detener()" onpointerleave="detener()">⬇️ Atrás</button>
-    </div>
+    <header>
+        <h1>🏗️ TorreGrúa Control</h1>
+        <div class="connection-status">
+            <div class="status-dot" id="statusDot"></div>
+            <span id="statusText">Desconectado</span>
+            <span id="pingText" style="opacity: 0.5; margin-left: 5px;"></span>
+        </div>
+    </header>
 
-    <!-- PANEL 2: SISTEMA DE ELEVACIÓN -->
-    <div class="panel">
-        <h3>Elevación</h3>
-        <button class="btn btn-elev" onpointerdown="iniciar('/up')" onpointerup="detener()" onpointerleave="detener()">🏗️ Subir</button>
-        <button class="btn btn-elev" onpointerdown="iniciar('/down')" onpointerup="detener()" onpointerleave="detener()">⚓ Bajar</button>
-    </div>
+    <div class="main-container">
+        <!-- COLUMNA 1: CONTROLES REMOTOS -->
+        <div class="card">
+            <h2>Mando a Distancia</h2>
+            
+            <div class="control-group">
+                <h3>Carro (Trolley)</h3>
+                <div class="control-row">
+                    <button class="btn btn-carro" onpointerdown="iniciar('/forward')" onpointerup="detener()" onpointerleave="detener()">
+                        <span>⬆️</span>
+                        <span>Adelante</span>
+                        <span class="btn-label">Trolley In</span>
+                    </button>
+                    <button class="btn btn-carro" onpointerdown="iniciar('/backward')" onpointerup="detener()" onpointerleave="detener()">
+                        <span>⬇️</span>
+                        <span>Atrás</span>
+                        <span class="btn-label">Trolley Out</span>
+                    </button>
+                </div>
+            </div>
 
-    <!-- PANEL 3: ROTACIÓN DE LA GRÚA -->
-    <div class="panel">
-        <h3>Giro de Torre</h3>
-        <button class="btn btn-giro" onpointerdown="iniciar('/left')" onpointerup="detener()" onpointerleave="detener()">⬅️ Izquierda</button>
-        <button class="btn btn-giro" onpointerdown="iniciar('/right')" onpointerup="detener()" onpointerleave="detener()">Derecha ➡️</button>
-    </div>
+            <div class="control-group">
+                <h3>Gancho (Hoist)</h3>
+                <div class="control-row">
+                    <button class="btn btn-elev" onpointerdown="iniciar('/up')" onpointerup="detener()" onpointerleave="detener()">
+                        <span>🏗️</span>
+                        <span>Subir</span>
+                        <span class="btn-label">Cable Up</span>
+                    </button>
+                    <button class="btn btn-elev" onpointerdown="iniciar('/down')" onpointerup="detener()" onpointerleave="detener()">
+                        <span>⚓</span>
+                        <span>Bajar</span>
+                        <span class="btn-label">Cable Down</span>
+                    </button>
+                </div>
+            </div>
 
-    <!-- BOTÓN DE EMERGENCIA -->
-    <div class="panel" style="padding: 10px 20px;">
-        <button class="btn btn-stop" onclick="enviarComando('/stop')">🛑 PARADA DE EMERGENCIA</button>
+            <div class="control-group">
+                <h3>Giro de Cabina (Slew)</h3>
+                <div class="control-row">
+                    <button class="btn btn-giro" onpointerdown="iniciar('/left')" onpointerup="detener()" onpointerleave="detener()">
+                        <span>⬅️</span>
+                        <span>Izquierda</span>
+                        <span class="btn-label">Slew CCW</span>
+                    </button>
+                    <button class="btn btn-giro" onpointerdown="iniciar('/right')" onpointerup="detener()" onpointerleave="detener()">
+                        <span>Derecha ➡️</span>
+                        <span class="btn-label">Slew CW</span>
+                    </button>
+                </div>
+            </div>
+
+            <div style="margin-top: 10px;">
+                <button class="btn btn-stop" onclick="enviarComando('/stop')">🛑 PARADA DE EMERGENCIA</button>
+            </div>
+        </div>
+
+        <!-- COLUMNA 2: TELEMETRÍA -->
+        <div class="card" style="gap: 20px;">
+            <div class="telemetry-header">
+                <h2 style="border: none; padding: 0;">Telemetría del Prototipo</h2>
+                <div class="mode-badge inactivo" id="modeBadge">REPOSO</div>
+            </div>
+
+            <!-- Gráficos Vectores SVG -->
+            <div class="visualizers">
+                <!-- Vista Lateral -->
+                <div class="viz-box">
+                    <div class="viz-box-title">Vista Lateral (Carro y Gancho)</div>
+                    <svg width="100%" height="160" viewBox="0 0 240 160" style="background: rgba(0,0,0,0.15); border-radius: 10px;">
+                        <!-- Torre (Estructura de la grúa) -->
+                        <line x1="60" y1="150" x2="60" y2="30" stroke="#465866" stroke-width="6" stroke-linecap="round"/>
+                        <line x1="45" y1="150" x2="75" y2="150" stroke="#465866" stroke-width="4" stroke-linecap="round"/>
+                        
+                        <!-- Tirantes estructurales interiores en diagonal -->
+                        <line x1="60" y1="120" x2="70" y2="90" stroke="#2c3e50" stroke-width="1.5"/>
+                        <line x1="60" y1="90" x2="50" y2="60" stroke="#2c3e50" stroke-width="1.5"/>
+                        <line x1="60" y1="60" x2="70" y2="30" stroke="#2c3e50" stroke-width="1.5"/>
+                        
+                        <!-- Pluma (Brazo horizontal) -->
+                        <!-- Contra-pluma (hacia la izquierda, con contrapeso) -->
+                        <line x1="20" y1="30" x2="60" y2="30" stroke="#7f8c8d" stroke-width="4"/>
+                        <rect x="25" y="24" width="12" height="12" fill="#7f8c8d" rx="2" title="Contrapeso"/>
+                        
+                        <!-- Pluma principal (hacia la derecha) -->
+                        <line x1="60" y1="30" x2="220" y2="30" stroke="#00bcd4" stroke-width="4" stroke-linecap="round" class="svg-glow"/>
+                        <line x1="60" y1="15" x2="60" y2="30" stroke="#7f8c8d" stroke-width="2"/>
+                        <line x1="20" y1="30" x2="60" y2="15" stroke="#7f8c8d" stroke-width="1.5"/>
+                        <line x1="100" y1="30" x2="60" y2="15" stroke="#7f8c8d" stroke-width="1.5"/>
+                        
+                        <!-- Cable de elevación vertical -->
+                        <line id="svgCable" x1="100" y1="32" x2="100" y2="80" stroke="#ffffff" stroke-width="2" stroke-dasharray="2,2"/>
+                        
+                        <!-- Carro móvil -->
+                        <rect id="svgCarro" x="90" y="28" width="20" height="8" fill="#e74c3c" rx="2"/>
+                        
+                        <!-- Gancho de elevación -->
+                        <g id="svgGancho" transform="translate(100, 80)">
+                            <circle cx="0" cy="0" r="4" fill="#ff9800" class="svg-glow-elev"/>
+                            <path d="M -3 0 L -3 6 C -3 9, 3 9, 3 6 C 3 4, 1 4, 1 5 C 1 7, -1 7, -1 6 L -1 0 Z" fill="#ff9800" class="svg-glow-elev"/>
+                        </g>
+
+                        <!-- Regla de distancia en la pluma -->
+                        <text x="65" y="47" font-size="8" fill="#546e7a" font-weight="600">0cm</text>
+                        <text x="200" y="47" font-size="8" fill="#546e7a" font-weight="600">30cm</text>
+                    </svg>
+                </div>
+
+                <!-- Vista Superior (Rotación) -->
+                <div class="viz-box">
+                    <div class="viz-box-title">Giro (Orientación)</div>
+                    <svg width="150" height="150" viewBox="0 0 120 120" style="background: rgba(0,0,0,0.15); border-radius: 50%;">
+                        <!-- Brújula circular exterior -->
+                        <circle cx="60" cy="60" r="50" fill="none" stroke="#2c3e50" stroke-width="2" stroke-dasharray="4,4"/>
+                        <text x="56" y="20" font-size="10" font-weight="bold" fill="#7f8c8d">N</text>
+                        <text x="57" y="110" font-size="10" font-weight="bold" fill="#2c3e50">S</text>
+                        <text x="100" y="64" font-size="10" font-weight="bold" fill="#2c3e50">E</text>
+                        <text x="12" y="64" font-size="10" font-weight="bold" fill="#2c3e50">O</text>
+                        
+                        <!-- Pluma rotatoria -->
+                        <g id="svgSlewGroup" transform="rotate(0, 60, 60)">
+                            <!-- Contra-pluma corta -->
+                            <line x1="60" y1="60" x2="60" y2="85" stroke="#7f8c8d" stroke-width="3" stroke-linecap="round"/>
+                            <circle cx="60" cy="85" r="4" fill="#7f8c8d"/>
+                            
+                            <!-- Pluma principal larga (glowing purple) -->
+                            <line x1="60" y1="60" x2="60" y2="20" stroke="#9c27b0" stroke-width="4" stroke-linecap="round" style="filter: drop-shadow(0 0 4px rgba(156, 39, 176, 0.6));"/>
+                            <polygon points="60,15 57,22 63,22" fill="#9c27b0"/>
+                            
+                            <!-- Indicador de carro en vista superior -->
+                            <circle id="svgCarroSuperior" cx="60" cy="45" r="4" fill="#e74c3c"/>
+                        </g>
+                        
+                        <!-- Eje central de la torre -->
+                        <circle cx="60" cy="60" r="7" fill="#ffffff" stroke="#2c3e50" stroke-width="2"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Panel de Indicadores Digitales -->
+            <div class="indicators-grid">
+                <div class="ind-card">
+                    <span class="ind-label">Carro (Distancia)</span>
+                    <span class="ind-val" id="valCarroCm">0.0 <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">cm</span></span>
+                    <span class="ind-state" id="stateCarro" style="color: var(--carro-color);">DETENIDO</span>
+                    <div class="progress-container">
+                        <div class="progress-bar pb-carro" id="barCarro"></div>
+                    </div>
+                </div>
+
+                <div class="ind-card">
+                    <span class="ind-label">Elevación (Gancho)</span>
+                    <span class="ind-val" id="valElevCm">0.0 <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">cm</span></span>
+                    <span class="ind-state" id="stateElev" style="color: var(--elev-color);">DETENIDO</span>
+                    <div class="progress-container">
+                        <div class="progress-bar pb-elev" id="barElev"></div>
+                    </div>
+                </div>
+
+                <div class="ind-card">
+                    <span class="ind-label">Ángulo de Giro</span>
+                    <span class="ind-val" id="valGiroDeg">0.0<span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">°</span></span>
+                    <span class="ind-state" id="stateGiro" style="color: var(--giro-color);">DETENIDO</span>
+                </div>
+            </div>
+
+            <!-- Depurador de Mandos Físicos (Joysticks) -->
+            <div class="joystick-debugger">
+                <div class="viz-box-title" style="margin-bottom: 4px;">Monitor de Entrada Analógica (Joysticks)</div>
+                
+                <div class="joy-bar-row">
+                    <span class="joy-name">Joy X (Carro)</span>
+                    <div class="joy-track">
+                        <div class="joy-center"></div>
+                        <div class="joy-fill" id="joyCarroFill"></div>
+                    </div>
+                    <span class="joy-val" id="joyCarroVal">512</span>
+                </div>
+
+                <div class="joy-bar-row">
+                    <span class="joy-name">Joy Y (Elev)</span>
+                    <div class="joy-track">
+                        <div class="joy-center"></div>
+                        <div class="joy-fill" id="joyElevFill"></div>
+                    </div>
+                    <span class="joy-val" id="joyElevVal">512</span>
+                </div>
+
+                <div class="joy-bar-row">
+                    <span class="joy-name">Joy Giro</span>
+                    <div class="joy-track">
+                        <div class="joy-center"></div>
+                        <div class="joy-fill" id="joyGiroFill"></div>
+                    </div>
+                    <span class="joy-val" id="joyGiroVal">512</span>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
         let intervalo = null;
+        let consecFails = 0;
 
         // Función base que hace la petición al ESP32 sin recargar la página (Fetch API)
         function enviarComando(ruta) {
@@ -123,6 +703,133 @@
                 enviarComando('/stop');   // Enviar comando de parada
             }
         }
+
+        // --- SISTEMA DE TELEMETRÍA ---
+        async function updateTelemetry() {
+            let tStart = performance.now();
+            try {
+                // Hacer polling del endpoint de telemetría asíncrono
+                let response = await fetch('/telemetry');
+                if (!response.ok) throw new Error("HTTP error " + response.status);
+                
+                let data = await response.json();
+                let tEnd = performance.now();
+                let ping = Math.round(tEnd - tStart);
+                
+                consecFails = 0; // Reiniciar contador de errores
+                
+                // Actualizar estado de la conexión (Heartbeat)
+                let statusDot = document.getElementById('statusDot');
+                let statusText = document.getElementById('statusText');
+                let pingText = document.getElementById('pingText');
+                
+                statusDot.className = 'status-dot connected';
+                statusText.innerText = 'Conectado';
+                pingText.innerText = `(${ping} ms)`;
+
+                // Actualizar Badge de Modo Activo
+                let modeBadge = document.getElementById('modeBadge');
+                modeBadge.className = 'mode-badge';
+                if (data.mode === 'WEB') {
+                    modeBadge.innerText = 'Modo Web';
+                    modeBadge.classList.add('web');
+                } else if (data.mode === 'JOYSTICK') {
+                    modeBadge.innerText = 'Modo Joystick';
+                    modeBadge.classList.add('joystick');
+                } else {
+                    modeBadge.innerText = 'Reposo';
+                    modeBadge.classList.add('inactivo');
+                }
+
+                // Actualizar textos digitales e indicadores de estado de motores
+                document.getElementById('valCarroCm').innerHTML = `${data.pCarro.toFixed(1)} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">cm</span>`;
+                document.getElementById('valElevCm').innerHTML = `${data.pElev.toFixed(1)} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">cm</span>`;
+                document.getElementById('valGiroDeg').innerHTML = `${data.pGiro.toFixed(1)}<span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">°</span>`;
+
+                document.getElementById('stateCarro').innerText = data.mCarro;
+                document.getElementById('stateElev').innerText = data.mElev;
+                document.getElementById('stateGiro').innerText = data.mGiro;
+
+                // Actualizar barras de progreso (Límites por defecto: carro=30cm, elev=50cm)
+                let pctCarro = Math.min(100, Math.max(0, (data.pCarro / 30.0) * 100));
+                let pctElev = Math.min(100, Math.max(0, (data.pElev / 50.0) * 100));
+                document.getElementById('barCarro').style.width = `${pctCarro}%`;
+                document.getElementById('barElev').style.width = `${pctElev}%`;
+
+                // --- ACTUALIZAR REPRESENTACIÓN DINÁMICA SVG LATERAL ---
+                // Mapear pctCarro a coordenadas X de pluma: 65px (0%) a 210px (100%)
+                let carriageX = 65 + (pctCarro / 100) * 145;
+                document.getElementById('svgCarro').setAttribute('x', carriageX - 10);
+                
+                // Mapear pctElev a la longitud del cable vertical: 10px (0%) a 100px (100%)
+                let cableLen = 10 + (pctElev / 100) * 90;
+                let newY2 = 32 + cableLen;
+                
+                let svgCable = document.getElementById('svgCable');
+                svgCable.setAttribute('x1', carriageX);
+                svgCable.setAttribute('x2', carriageX);
+                svgCable.setAttribute('y2', newY2);
+                
+                // Desplazar el gancho verticalmente al final del cable
+                document.getElementById('svgGancho').setAttribute('transform', `translate(${carriageX}, ${newY2})`);
+
+                // --- ACTUALIZAR VISTA DE GIRO SUPERIOR SVG ---
+                // Rotar el grupo del brazo de la pluma
+                document.getElementById('svgSlewGroup').setAttribute('transform', `rotate(${data.pGiro}, 60, 60)`);
+                
+                // Mapear el carro en la vista superior (radio exterior del brazo rotatorio): 10px a 45px
+                let radius = 10 + (pctCarro / 100) * 35;
+                document.getElementById('svgCarroSuperior').setAttribute('cy', 60 - radius);
+
+                // --- DEPURADOR DE ENTRADA ANALÓGICA DE JOYSTICKS ---
+                // El joystick lee valores de 0 a 1023 (centro ~512)
+                updateJoystickBar('joyCarroFill', 'joyCarroVal', data.cx);
+                updateJoystickBar('joyElevFill', 'joyElevVal', data.cy);
+                updateJoystickBar('joyGiroFill', 'joyGiroVal', data.cz);
+
+            } catch (error) {
+                console.error("Error al obtener telemetría:", error);
+                consecFails++;
+                
+                // Si falla 3 veces seguidas, mostrar estado desconectado
+                if (consecFails >= 3) {
+                    let statusDot = document.getElementById('statusDot');
+                    let statusText = document.getElementById('statusText');
+                    let pingText = document.getElementById('pingText');
+                    
+                    statusDot.className = 'status-dot';
+                    statusText.innerText = 'Desconectado';
+                    pingText.innerText = '';
+                    
+                    let modeBadge = document.getElementById('modeBadge');
+                    modeBadge.className = 'mode-badge inactivo';
+                    modeBadge.innerText = 'SIN CONEXIÓN';
+                }
+            }
+        }
+
+        // Dibuja una barra bidireccional basada en el centro (512) para depurar el joystick
+        function updateJoystickBar(fillId, valId, rawVal) {
+            let val = parseInt(rawVal);
+            if (isNaN(val)) val = 512;
+            
+            document.getElementById(valId).innerText = val;
+            let fill = document.getElementById(fillId);
+            
+            let offset = ((val - 512) / 512) * 50; // Rango [-50%, 50%]
+            if (offset >= 0) {
+                fill.style.left = '50%';
+                fill.style.width = `${offset}%`;
+            } else {
+                fill.style.left = `${50 + offset}%`;
+                fill.style.width = `${Math.abs(offset)}%`;
+            }
+        }
+
+        // Habilitar polling periódico de telemetría (cada 300 ms)
+        setInterval(updateTelemetry, 300);
+        // Carga inicial
+        updateTelemetry();
     </script>
 </body>
 </html>
