@@ -8,27 +8,17 @@ La grúa se puede manejar de dos formas al mismo tiempo:
 
 ---
 
-## 🎮 ¿Cómo se controla la grúa?
-
-La grúa tiene dos "cerebros electrónicos" que trabajan en equipo:
-
-*   **El Cerebro Wi-Fi (ESP32):** Es el encargado de recibir tus órdenes cuando presionas un botón en tu celular. Crea una señal Wi-Fi local y sirve la pantalla de control para que accedas a ella.
-*   **El Cerebro Mecánico (Arduino Nano):** Es el que está conectado directamente a los motores físicos y a las palancas manuales. Escucha al cerebro Wi-Fi y mueve la grúa según lo que le pidas.
-
----
-
 ## 🖥️ El Menú de Pantalla (¿Qué pasa al encender la grúa?)
 
-Cuando conectas el Cerebro Wi-Fi a tu computadora (por ejemplo, usando Thonny), verás aparecer un menú interactivo en tu pantalla con una **cuenta regresiva de 5 segundos**. Tienes dos opciones presionando los números en tu teclado:
-
-*   **Opción 1: Iniciar sistema normalmente (Modo Ejecución)**
-    *   *¿Cómo se activa?* Presiona el número `1` en tu teclado o simplemente **no presiones nada y espera 5 segundos**.
-    *   *¿Qué hace?* La grúa buscará tu red Wi-Fi local para conectarse. Una vez conectada, te mostrará un mensaje en pantalla diciendo:
-        `Ingresa esta Dirección IP en tu navegador: 192.168.X.X`
-        ¡Solo escribe ese número en el navegador de tu celular y tu control táctil estará listo para jugar!
-*   **Opción 2: Detener en modo programación (Liberar REPL)**
-    *   *¿Cómo se activa?* Presiona el número `2` en tu teclado antes de que la cuenta regresiva llegue a cero.
-    *   *¿Qué hace?* La grúa no intentará conectarse a internet ni arrancará los motores. Se quedará completamente en pausa para que tú puedas editar, borrar o subir nuevo código a los archivos de forma cómoda y segura.
+1. Conecta el Cerebro Wi-Fi a tu computadora.
+2. Aparecerá un menú con una cuenta regresiva de 5 segundos.
+3. Si quieres usar la grúa desde tu celular o computadora:
+    * Presiona `1`, o no hagas nada y espera 5 segundos.
+    * La grúa buscará tu Wi-Fi y te mostrará una dirección IP.
+    * Escribe esa dirección en el navegador de tu celular.
+4. Si quieres dejar la grúa lista para editar código:
+    * Presiona `2` antes de que acabe la cuenta regresiva.
+    * La grúa se quedará en pausa y no conectará ni moverá motores.
 
 ---
 
