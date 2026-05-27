@@ -26,10 +26,16 @@ Toda la evolución del proyecto está respaldada por nuestro historial de versio
     *   Diseño y acoplamiento de la lógica del servidor web asíncrono para servir el panel interactivo `index.html`.
     *   Mejoras en el inicio del Wi-Fi y configuración inicial del menú en la consola de la computadora.
 
-### 5. 🛡️ Hito 5: Acoplamiento Seguro de Código (Última Actualización)
+### 5. 🛡️ Hito 5: Acoplamiento Seguro de Código (Cierre de Seguridad)
 *   **Logros:**
-    *   **Menú terminal inteligente**: Se implementó una cuenta regresiva de 5 segundos en `boot.py` que permite a los estudiantes seleccionar cómodamente entre arrancar la grúa normalmente (Opción 1) o detenerla de inmediato para programar (Opción 2), liberando el puerto de comunicación (REPL) en Thonny.
-    *   **Cierre controlado por teclado**: Integración del bloque de seguridad `KeyboardInterrupt` con salto de línea en `main.py` para detener el servidor de manera controlada y sin fallos del procesador.
+    *   **Menú terminal inteligente**: Se implementó una cuenta regresiva de 5 segundos en `boot.py` que permite seleccionar cómodamente entre arrancar la grúa normalmente o detenerla de inmediato para programar (REPL libre).
+    *   **Cierre controlado por teclado**: Integración del bloque de seguridad `KeyboardInterrupt` en `main.py` para detener el servidor de manera controlada y sin fallos del procesador.
+
+### 6. ⚙️ Hito 6: Migración a Motores DC y Control Exclusivo Alternado (Mayo de 2026)
+*   **Logros:**
+    *   **Reemplazo del Motor a Pasos**: Sustitución del motor Nema 17 por un motorreductor DC de 30 RPM para el eje de giro, manejado mediante puente H.
+    *   **Control de 3 Motores DC**: Configuración final con 3 motores DC reales (Carro, Elevación y Giro) con velocidades ajustables por software en Arduino.
+    *   **Conmutación Alternada Bidireccional**: Conmutador de modo exclusivo mediante pulsador físico (A3) e interruptor web (endpoint `/toggle-mode`), permitiendo telemetría en tiempo real de los 3 movimientos desde el joystick hacia la web de forma dinámica.
 
 ---
 

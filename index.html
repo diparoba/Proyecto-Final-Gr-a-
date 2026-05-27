@@ -254,6 +254,14 @@
             letter-spacing: 0.5px;
         }
 
+        .btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+            pointer-events: none;
+            box-shadow: none;
+            filter: grayscale(0.4);
+        }
+
         /* Telemetría */
         .telemetry-header {
             display: flex;
@@ -271,6 +279,7 @@
             letter-spacing: 0.8px;
             text-transform: uppercase;
             transition: all 0.3s;
+            cursor: pointer;
         }
 
         .mode-badge.web {
@@ -291,6 +300,56 @@
             background: rgba(143, 156, 174, 0.1);
             border-color: var(--text-secondary);
             color: var(--text-secondary);
+        }
+
+        /* Estilos para el Switch Toggle */
+        .switch-container {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch-container input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-color);
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-secondary);
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: rgba(0, 188, 212, 0.2);
+            border-color: var(--carro-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+            background-color: var(--carro-color);
+            box-shadow: 0 0 8px var(--carro-glow);
         }
 
         .visualizers {
@@ -466,10 +525,20 @@
 <body>
     <header>
         <h1>🏗️ TorreGrúa Control</h1>
-        <div class="connection-status">
-            <div class="status-dot" id="statusDot"></div>
-            <span id="statusText">Desconectado</span>
-            <span id="pingText" style="opacity: 0.5; margin-left: 5px;"></span>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <!-- Interruptor de modo (Toggle Switch) -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <span id="switchLabel" style="font-size: 13px; font-weight: 600; color: var(--text-secondary); transition: all 0.3s;">Control Web</span>
+                <label class="switch-container" title="Alternar Modo de Control">
+                    <input type="checkbox" id="modeSwitch" onchange="enviarComando('/toggle-mode')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="connection-status">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Desconectado</span>
+                <span id="pingText" style="opacity: 0.5; margin-left: 5px;"></span>
+            </div>
         </div>
     </header>
 
@@ -534,7 +603,7 @@
         <div class="card" style="gap: 20px;">
             <div class="telemetry-header">
                 <h2 style="border: none; padding: 0;">Telemetría del Prototipo</h2>
-                <div class="mode-badge inactivo" id="modeBadge">REPOSO</div>
+                <div class="mode-badge inactivo" id="modeBadge" onclick="enviarComando('/toggle-mode')">REPOSO</div>
             </div>
 
             <!-- Gráficos Vectores SVG -->
@@ -727,19 +796,45 @@
                 statusText.innerText = 'Conectado';
                 pingText.innerText = `(${ping} ms)`;
 
-                // Actualizar Badge de Modo Activo
+                // Actualizar Badge de Modo Activo y Switch Toggle
                 let modeBadge = document.getElementById('modeBadge');
+                let modeSwitch = document.getElementById('modeSwitch');
+                let switchLabel = document.getElementById('switchLabel');
                 modeBadge.className = 'mode-badge';
-                if (data.mode === 'WEB') {
+                
+                let isWebMode = (data.mode === 'WEB');
+                
+                if (isWebMode) {
                     modeBadge.innerText = 'Modo Web';
                     modeBadge.classList.add('web');
+                    if (modeSwitch) modeSwitch.checked = true;
+                    if (switchLabel) {
+                        switchLabel.innerText = 'Control Web: Activo';
+                        switchLabel.style.color = 'var(--carro-color)';
+                    }
                 } else if (data.mode === 'JOYSTICK') {
                     modeBadge.innerText = 'Modo Joystick';
                     modeBadge.classList.add('joystick');
+                    if (modeSwitch) modeSwitch.checked = false;
+                    if (switchLabel) {
+                        switchLabel.innerText = 'Mando Joystick';
+                        switchLabel.style.color = 'var(--success-color)';
+                    }
                 } else {
                     modeBadge.innerText = 'Reposo';
                     modeBadge.classList.add('inactivo');
+                    if (modeSwitch) modeSwitch.checked = false;
+                    if (switchLabel) {
+                        switchLabel.innerText = 'Control Web';
+                        switchLabel.style.color = 'var(--text-secondary)';
+                    }
                 }
+
+                // Habilitar/Deshabilitar botones de control manual según corresponda (excluyendo Parada de Emergencia)
+                let controlButtons = document.querySelectorAll('.btn:not(.btn-stop)');
+                controlButtons.forEach(btn => {
+                    btn.disabled = !isWebMode;
+                });
 
                 // Actualizar textos digitales e indicadores de estado de motores
                 document.getElementById('valCarroCm').innerHTML = `${data.pCarro.toFixed(1)} <span style="font-size: 11px; color: var(--text-secondary); font-weight: normal;">cm</span>`;
@@ -804,6 +899,17 @@
                     let modeBadge = document.getElementById('modeBadge');
                     modeBadge.className = 'mode-badge inactivo';
                     modeBadge.innerText = 'SIN CONEXIÓN';
+
+                    // Deshabilitar controles al desconectarse
+                    let controlButtons = document.querySelectorAll('.btn:not(.btn-stop)');
+                    controlButtons.forEach(btn => btn.disabled = true);
+                    let modeSwitch = document.getElementById('modeSwitch');
+                    if (modeSwitch) modeSwitch.checked = false;
+                    let switchLabel = document.getElementById('switchLabel');
+                    if (switchLabel) {
+                        switchLabel.innerText = 'Control Web';
+                        switchLabel.style.color = 'var(--text-secondary)';
+                    }
                 }
             }
         }

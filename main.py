@@ -75,6 +75,7 @@ async def handle_client(reader, writer):
         elif "GET /left " in request: comando = 'L'
         elif "GET /right " in request: comando = 'R'
         elif "GET /stop " in request: comando = 'S'
+        elif "GET /toggle-mode " in request: comando = 'M'
        
         # Lógica de respuesta del servidor
         if comando:
