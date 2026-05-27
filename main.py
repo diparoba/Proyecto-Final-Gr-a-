@@ -82,6 +82,16 @@ async def handle_client(reader, writer):
         if comando:
             # Enviar el carácter por el puerto serial al Arduino Nano
             uart.write(comando)
+            
+            # Imprimir el comando descriptivo en la consola de Thonny
+            if comando == 'F': print("Web Command: ADELANTE (Carro)")
+            elif comando == 'B': print("Web Command: ATRÁS (Carro)")
+            elif comando == 'U': print("Web Command: SUBIR (Gancho)")
+            elif comando == 'D': print("Web Command: BAJAR (Gancho)")
+            elif comando == 'L': print("Web Command: IZQUIERDA (Giro)")
+            elif comando == 'R': print("Web Command: DERECHA (Giro)")
+            elif comando == 'S': print("Web Command: DETENER (Parada)")
+            
             # Para peticiones de control (Fetch API), respondemos rápido y sin HTML
             response = "HTTP/1.1 200 OK\r\nAccess-Control-Allow-Origin: *\r\nConnection: close\r\n\r\nOK"
            
