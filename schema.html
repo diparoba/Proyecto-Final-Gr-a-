@@ -5,62 +5,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔌 Guía de Conexiones Electrónicas - TorreGrúa</title>
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --bg-color: #0b0f19;
-            --card-bg: rgba(22, 30, 49, 0.75);
+            --panel-bg: rgba(22, 30, 49, 0.75);
             --border-color: rgba(255, 255, 255, 0.08);
             
-            --pow-color: #ff1744;     /* Rojo alimentación */
-            --gnd-color: #00e676;     /* Verde GND */
-            --uart-color: #d500f9;    /* Violeta comunicación */
-            --joy-color: #ffd600;     /* Amarillo joystick */
-            --motor-color: #00e5ff;   /* Cyan motores */
+            --pow-color: #f43f5e;     /* Rosa/Rojo alimentación lógica */
+            --pow-ext-color: #f97316; /* Naranja alimentación potencia */
+            --gnd-color: #10b981;     /* Esmeralda GND */
+            --uart-color: #d946ef;    /* Fucsia UART */
+            --joy-color: #f59e0b;     /* Ámbar Joystick */
+            --motor-color: #06b6d4;   /* Cian Motores */
             
-            --text-primary: #ffffff;
-            --text-secondary: #8f9cae;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
         * {
             box-sizing: border-box;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.1) transparent;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             background-color: var(--bg-color);
             color: var(--text-primary);
             margin: 0;
-            padding: 20px;
+            padding: 20px 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
             background-image: 
-                radial-gradient(at 10% 20%, rgba(156, 39, 176, 0.06) 0px, transparent 50%),
-                radial-gradient(at 90% 80%, rgba(0, 188, 212, 0.06) 0px, transparent 50%);
+                radial-gradient(at 10% 20%, rgba(217, 70, 239, 0.04) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(6, 182, 212, 0.04) 0px, transparent 50%);
             background-attachment: fixed;
         }
 
         header {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1250px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
-            padding: 10px 0;
+            padding-bottom: 15px;
             border-bottom: 1px solid var(--border-color);
         }
 
         header h1 {
-            font-family: 'Montserrat', sans-serif;
             font-weight: 800;
             margin: 0;
             font-size: 24px;
-            background: linear-gradient(135deg, #00e5ff, #d500f9);
+            background: linear-gradient(135deg, var(--motor-color), var(--uart-color));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             letter-spacing: 1px;
@@ -70,7 +72,7 @@
         }
 
         .back-btn {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.04);
             border: 1px solid var(--border-color);
             color: var(--text-primary);
             padding: 8px 16px;
@@ -85,15 +87,15 @@
         }
 
         .back-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: #00e5ff;
-            box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: var(--motor-color);
+            box-shadow: 0 0 12px rgba(6, 182, 212, 0.2);
             transform: translateY(-2px);
         }
 
         .main-layout {
             width: 100%;
-            max-width: 1200px;
+            max-width: 1250px;
             display: grid;
             grid-template-columns: 1fr;
             gap: 25px;
@@ -101,33 +103,35 @@
 
         @media(min-width: 1024px) {
             .main-layout {
-                grid-template-columns: 1.2fr 1fr;
+                grid-template-columns: 1.3fr 1fr;
             }
         }
 
         .card {
-            background: var(--card-bg);
+            background: var(--panel-bg);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-radius: 20px;
             border: 1px solid var(--border-color);
             padding: 24px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
 
         .card h2 {
-            font-family: 'Montserrat', sans-serif;
             font-size: 16px;
             font-weight: 700;
-            color: var(--text-secondary);
+            color: var(--text-primary);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin: 0;
             border-bottom: 1px solid rgba(255, 255, 255, 0.06);
             padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         /* Contenedor del SVG interactivo */
@@ -136,88 +140,90 @@
             overflow-x: auto;
             display: flex;
             justify-content: center;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 12px;
-            padding: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
+            background: #060911;
+            border-radius: 14px;
+            padding: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
         }
 
         /* SVG Styles */
         svg {
-            max-width: 100%;
+            min-width: 950px;
             height: auto;
         }
 
         .component-box {
             stroke-width: 2;
-            rx: 6;
-            ry: 6;
+            rx: 8;
+            ry: 8;
             transition: all 0.3s ease;
         }
 
         /* Component Colors */
         .arduino-box {
             fill: #0d47a1;
-            stroke: #1565c0;
+            stroke: #1e3a8a;
         }
         .esp-box {
-            fill: #1e1e1e;
-            stroke: #333333;
+            fill: #18181b;
+            stroke: #3f3f46;
         }
         .hbridge-box {
-            fill: #880e4f;
-            stroke: #ad1457;
+            fill: #4c0519;
+            stroke: #881337;
         }
         .joy-box {
-            fill: #263238;
-            stroke: #37474f;
+            fill: #1e293b;
+            stroke: #334155;
         }
-        .batt-box {
-            fill: #3e2723;
-            stroke: #4e342e;
+        .power-supply-box {
+            fill: #1e1b4b;
+            stroke: #312e81;
         }
-        .motor-ind {
-            fill: #006064;
-            stroke: #00838f;
+        .motor-box {
+            fill: #0f172a;
+            stroke: #1e293b;
         }
 
         .comp-title {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 12px;
+            font-weight: 700;
+            font-size: 11.5px;
             fill: #ffffff;
-            font-weight: bold;
         }
 
         .comp-subtitle {
-            font-size: 8px;
-            fill: rgba(255,255,255,0.6);
+            font-size: 7.5px;
+            fill: var(--text-secondary);
         }
 
         .pin-label {
             font-family: var(--font-mono);
             font-size: 8px;
-            fill: rgba(255, 255, 255, 0.85);
-            font-weight: bold;
+            fill: rgba(255, 255, 255, 0.7);
+            font-weight: 600;
         }
 
         .pin-dot {
             fill: #ffffff;
-            stroke: #1a1a1a;
-            stroke-width: 1;
+            stroke: #111827;
+            stroke-width: 1.2;
+            transition: r 0.2s, fill 0.2s;
         }
 
         /* Estilos de cables */
         .wire-line {
             fill: none;
-            stroke-width: 2;
+            stroke-width: 2.8;
             stroke-linecap: round;
             stroke-linejoin: round;
-            transition: stroke-width 0.25s ease, stroke 0.25s ease, filter 0.25s ease, opacity 0.3s ease;
+            transition: stroke-width 0.2s, stroke 0.25s, filter 0.2s, opacity 0.3s;
             cursor: pointer;
         }
 
         /* Colores Base de cables */
         .wire-line.power { stroke: var(--pow-color); }
+        .wire-line.powext { stroke: var(--pow-ext-color); stroke-dasharray: 6, 4; }
         .wire-line.gnd { stroke: var(--gnd-color); }
         .wire-line.uart { stroke: var(--uart-color); }
         .wire-line.joy { stroke: var(--joy-color); }
@@ -225,28 +231,45 @@
 
         /* Estados activos y opacados */
         .wire-line.dimmed {
-            opacity: 0.15 !important;
+            opacity: 0.1 !important;
         }
 
         .wire-line.active-connection {
-            stroke-width: 4.5 !important;
+            stroke-width: 4.8 !important;
             opacity: 1 !important;
         }
         
-        .wire-line.power.active-connection {
-            filter: drop-shadow(0 0 5px var(--pow-color));
+        .wire-line.power.active-connection { filter: drop-shadow(0 0 6px var(--pow-color)); }
+        .wire-line.powext.active-connection { filter: drop-shadow(0 0 6px var(--pow-ext-color)); }
+        .wire-line.gnd.active-connection { filter: drop-shadow(0 0 6px var(--gnd-color)); }
+        .wire-line.uart.active-connection { filter: drop-shadow(0 0 6px var(--uart-color)); }
+        .wire-line.joy.active-connection { filter: drop-shadow(0 0 6px var(--joy-color)); }
+        .wire-line.motor.active-connection { filter: drop-shadow(0 0 6px var(--motor-color)); }
+
+        /* Información del Hover */
+        .info-panel {
+            background-color: rgba(15, 23, 42, 0.6);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 5px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
         }
-        .wire-line.gnd.active-connection {
-            filter: drop-shadow(0 0 5px var(--gnd-color));
+
+        .info-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--pow-ext-color);
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        .wire-line.uart.active-connection {
-            filter: drop-shadow(0 0 5px var(--uart-color));
-        }
-        .wire-line.joy.active-connection {
-            filter: drop-shadow(0 0 5px var(--joy-color));
-        }
-        .wire-line.motor.active-connection {
-            filter: drop-shadow(0 0 5px var(--motor-color));
+
+        .info-desc {
+            font-size: 12px;
+            color: var(--text-secondary);
+            line-height: 1.5;
         }
 
         /* Tabla y Filtros */
@@ -258,7 +281,7 @@
         }
 
         .filter-btn {
-            background: rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
             color: var(--text-secondary);
             padding: 6px 12px;
@@ -275,28 +298,29 @@
             color: var(--text-primary);
         }
 
-        .filter-btn.active[data-filter="all"] { border-color: var(--text-primary); color: var(--text-primary); background: rgba(255, 255, 255, 0.1); }
-        .filter-btn.active[data-filter="power"] { border-color: var(--pow-color); color: var(--pow-color); background: rgba(255, 23, 68, 0.1); }
-        .filter-btn.active[data-filter="gnd"] { border-color: var(--gnd-color); color: var(--gnd-color); background: rgba(0, 230, 118, 0.1); }
-        .filter-btn.active[data-filter="uart"] { border-color: var(--uart-color); color: var(--uart-color); background: rgba(213, 0, 249, 0.1); }
-        .filter-btn.active[data-filter="joy"] { border-color: var(--joy-color); color: var(--joy-color); background: rgba(255, 214, 0, 0.1); }
-        .filter-btn.active[data-filter="motor"] { border-color: var(--motor-color); color: var(--motor-color); background: rgba(0, 229, 255, 0.1); }
+        .filter-btn.active[data-filter="all"] { border-color: var(--text-primary); color: var(--text-primary); background: rgba(255, 255, 255, 0.08); }
+        .filter-btn.active[data-filter="power"] { border-color: var(--pow-color); color: var(--pow-color); background: rgba(244, 63, 94, 0.1); }
+        .filter-btn.active[data-filter="gnd"] { border-color: var(--gnd-color); color: var(--gnd-color); background: rgba(16, 185, 129, 0.1); }
+        .filter-btn.active[data-filter="uart"] { border-color: var(--uart-color); color: var(--uart-color); background: rgba(217, 70, 239, 0.1); }
+        .filter-btn.active[data-filter="motor"] { border-color: var(--motor-color); color: var(--motor-color); background: rgba(6, 182, 212, 0.1); }
+        .filter-btn.active[data-filter="joy"] { border-color: var(--joy-color); color: var(--joy-color); background: rgba(245, 158, 11, 0.1); }
 
         .search-box {
             width: 100%;
-            background: rgba(0, 0, 0, 0.2);
+            background: rgba(0, 0, 0, 0.25);
             border: 1px solid var(--border-color);
             padding: 10px 14px;
             border-radius: 10px;
             color: var(--text-primary);
-            font-family: 'Inter', sans-serif;
+            font-family: 'Outfit', sans-serif;
             font-size: 13px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
         }
 
         .search-box:focus {
-            border-color: #00e5ff;
+            border-color: var(--motor-color);
+            box-shadow: 0 0 10px rgba(6, 182, 212, 0.15);
         }
 
         .table-wrapper {
@@ -315,7 +339,6 @@
 
         th {
             background: rgba(255, 255, 255, 0.02);
-            font-family: 'Montserrat', sans-serif;
             color: var(--text-secondary);
             font-weight: 700;
             padding: 12px;
@@ -341,30 +364,31 @@
         }
 
         tbody tr.active-row {
-            background-color: rgba(0, 229, 255, 0.07) !important;
+            background-color: rgba(6, 182, 212, 0.08) !important;
         }
 
         .badge {
             display: inline-block;
             padding: 3px 8px;
             border-radius: 6px;
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
             text-transform: uppercase;
+            border: 1px solid transparent;
         }
 
-        .badge-power { background: rgba(255, 23, 68, 0.15); color: #ff5252; border: 1px solid rgba(255, 23, 68, 0.2); }
-        .badge-gnd { background: rgba(0, 230, 118, 0.15); color: #69f0ae; border: 1px solid rgba(0, 230, 118, 0.2); }
-        .badge-uart { background: rgba(213, 0, 249, 0.15); color: #ea80fc; border: 1px solid rgba(213, 0, 249, 0.2); }
-        .badge-joy { background: rgba(255, 214, 0, 0.15); color: #ffe57f; border: 1px solid rgba(255, 214, 0, 0.2); }
-        .badge-motor { background: rgba(0, 229, 255, 0.15); color: #84ffff; border: 1px solid rgba(0, 229, 255, 0.2); }
+        .badge-power { background: rgba(244, 63, 94, 0.12); color: #fda4af; border-color: rgba(244, 63, 94, 0.2); }
+        .badge-gnd { background: rgba(16, 185, 129, 0.12); color: #a7f3d0; border-color: rgba(16, 185, 129, 0.2); }
+        .badge-uart { background: rgba(217, 70, 239, 0.12); color: #f5d0fe; border-color: rgba(217, 70, 239, 0.2); }
+        .badge-joy { background: rgba(245, 158, 11, 0.12); color: #fde68a; border-color: rgba(245, 158, 11, 0.2); }
+        .badge-motor { background: rgba(6, 182, 212, 0.12); color: #cffafe; border-color: rgba(6, 182, 212, 0.2); }
 
         .pin-tag {
             font-family: var(--font-mono);
-            background: rgba(255,255,255,0.06);
-            padding: 2px 5px;
+            background: rgba(255,255,255,0.05);
+            padding: 2px 6px;
             border-radius: 4px;
-            border: 1px solid rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.02);
             color: #ffffff;
         }
 
@@ -398,342 +422,417 @@
             <h2>Esquema Interactivo de Circuitos</h2>
             
             <div class="svg-container">
-                <!-- Lienzo SVG principal de 840x520 -->
-                <svg width="840" height="520" viewBox="0 0 840 520" id="circuitSvg">
+                <svg width="1000" height="680" viewBox="0 0 1000 680" id="circuitSvg">
                     
                     <!-- Definición de filtros de brillo -->
                     <defs>
-                        <filter id="glow-shadow" x="-20%" y="-20%" width="140%" height="140%">
-                            <feGaussianBlur stdDeviation="3" result="blur" />
-                            <feMerge>
-                                <feMergeNode in="blur" />
-                                <feMergeNode in="SourceGraphic" />
-                            </feMerge>
+                        <!-- Filtro de glow de alta fidelidad -->
+                        <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="4" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
                         </filter>
+                        <!-- Grid de Fondo Estilo Blueprint -->
+                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.02)" stroke-width="0.75" />
+                        </pattern>
                     </defs>
+
+                    <!-- Fondo de cuadrícula -->
+                    <rect width="1000" height="680" fill="url(#grid)" />
 
                     <!-- ================= COMPONENTES ================= -->
 
-                    <!-- 1. BATERÍA 9V EXTERNA (FÍSICA) -->
+                    <!-- 1. FUENTE DE POTENCIA (12V DC) -->
                     <g id="comp-batt">
-                        <rect x="20" y="40" width="100" height="150" class="component-box batt-box" />
-                        <text x="35" y="65" class="comp-title">Batería 9V</text>
-                        <text x="35" y="80" class="comp-subtitle">Alimentación Motor</text>
+                        <rect x="420" y="20" width="160" height="70" class="component-box power-supply-box" />
+                        <!-- Detalles estéticos de la fuente -->
+                        <line x1="430" y1="28" x2="570" y2="28" stroke="rgba(255,255,255,0.08)" stroke-width="1" />
+                        <text x="500" y="42" class="comp-title" text-anchor="middle">FUENTE DE POTENCIA</text>
+                        <text x="500" y="55" class="comp-subtitle" text-anchor="middle" style="fill: var(--pow-ext-color); font-weight: bold;">12V DC (Potencia)</text>
                         
-                        <!-- Terminales batería -->
-                        <rect x="40" y="25" width="20" height="15" fill="#111" rx="2" />
-                        <circle cx="50" cy="32" r="2" fill="#666" />
-                        <text x="47" y="20" font-size="8" fill="#ff1744" font-weight="bold">+</text>
-                        <circle id="pin-batt-pos" cx="50" cy="40" r="4" class="pin-dot" />
+                        <!-- Terminales de salida -->
+                        <text x="450" y="80" class="pin-label" text-anchor="middle" fill="var(--pow-ext-color)">+12V</text>
+                        <circle id="pin-batt-pos" cx="450" cy="90" r="4.5" class="pin-dot" />
 
-                        <rect x="80" y="25" width="20" height="15" fill="#111" rx="2" />
-                        <circle cx="90" cy="32" r="3" fill="#666" />
-                        <text x="87" y="20" font-size="8" fill="#00e676" font-weight="bold">-</text>
-                        <circle id="pin-batt-neg" cx="90" cy="40" r="4" class="pin-dot" />
+                        <text x="550" y="80" class="pin-label" text-anchor="middle" fill="var(--gnd-color)">GND</text>
+                        <circle id="pin-batt-neg" cx="550" cy="90" r="4.5" class="pin-dot" />
                     </g>
 
-                    <!-- 2. ARDUINO NANO (CENTRO) -->
-                    <g id="comp-arduino">
-                        <rect x="260" y="40" width="160" height="240" class="component-box arduino-box" />
-                        <text x="280" y="65" class="comp-title">Arduino Nano</text>
-                        <text x="280" y="80" class="comp-subtitle">Controlador Principal</text>
-
-                        <!-- PINES LADO IZQUIERDO (Señales y UART) -->
-                        <!-- Pin D0 (RX) -->
-                        <circle id="pin-ard-d0" cx="260" cy="110" r="3.5" class="pin-dot" />
-                        <text x="270" y="113" class="pin-label">D0 (RX)</text>
-
-                        <!-- Pin D1 (TX) -->
-                        <circle id="pin-ard-d1" cx="260" cy="130" r="3.5" class="pin-dot" />
-                        <text x="270" y="133" class="pin-label">D1 (TX)</text>
-
-                        <!-- Pin 5V -->
-                        <circle id="pin-ard-5v" cx="260" cy="170" r="3.5" class="pin-dot" />
-                        <text x="270" y="173" class="pin-label">5V (VCC)</text>
-
-                        <!-- Pin GND -->
-                        <circle id="pin-ard-gnd" cx="260" cy="190" r="3.5" class="pin-dot" />
-                        <text x="270" y="193" class="pin-label">GND</text>
-
-                        <!-- Pin A0 -->
-                        <circle id="pin-ard-a0" cx="260" cy="220" r="3.5" class="pin-dot" />
-                        <text x="270" y="223" class="pin-label">A0 (Joy1 X)</text>
-
-                        <!-- Pin A1 -->
-                        <circle id="pin-ard-a1" cx="260" cy="240" r="3.5" class="pin-dot" />
-                        <text x="270" y="243" class="pin-label">A1 (Joy1 Y)</text>
-
-                        <!-- Pin A2 -->
-                        <circle id="pin-ard-a2" cx="260" cy="260" r="3.5" class="pin-dot" />
-                        <text x="270" y="263" class="pin-label">A2 (Joy2 X)</text>
-
-                        <!-- PINES LADO DERECHO (Control Motores) -->
-                        <!-- Pin D2 (Carro AIN1) -->
-                        <circle id="pin-ard-d2" cx="420" cy="100" r="3.5" class="pin-dot" />
-                        <text x="375" y="103" class="pin-label">D2 (C1)</text>
-
-                        <!-- Pin D3 (Carro PWMA) -->
-                        <circle id="pin-ard-d3" cx="420" cy="120" r="3.5" class="pin-dot" />
-                        <text x="375" y="123" class="pin-label">D3 (CP)</text>
-
-                        <!-- Pin D4 (Carro AIN2) -->
-                        <circle id="pin-ard-d4" cx="420" cy="140" r="3.5" class="pin-dot" />
-                        <text x="375" y="143" class="pin-label">D4 (C2)</text>
-
-                        <!-- Pin D5 (Giro PWMB) -->
-                        <circle id="pin-ard-d5" cx="420" cy="160" r="3.5" class="pin-dot" />
-                        <text x="375" y="163" class="pin-label">D5 (GP)</text>
-
-                        <!-- Pin D6 (Elev PWMA) -->
-                        <circle id="pin-ard-d6" cx="420" cy="180" r="3.5" class="pin-dot" />
-                        <text x="375" y="183" class="pin-label">D6 (EP)</text>
-
-                        <!-- Pin D7 (Giro BIN1) -->
-                        <circle id="pin-ard-d7" cx="420" cy="200" r="3.5" class="pin-dot" />
-                        <text x="375" y="203" class="pin-label">D7 (G1)</text>
-
-                        <!-- Pin D8 (Giro BIN2) -->
-                        <circle id="pin-ard-d8" cx="420" cy="220" r="3.5" class="pin-dot" />
-                        <text x="375" y="223" class="pin-label">D8 (G2)</text>
-
-                        <!-- Pin D10 (Elev AIN1) -->
-                        <circle id="pin-ard-d10" cx="420" cy="240" r="3.5" class="pin-dot" />
-                        <text x="365" y="243" class="pin-label">D10 (E1)</text>
-
-                        <!-- Pin D11 (Elev AIN2) -->
-                        <circle id="pin-ard-d11" cx="420" cy="260" r="3.5" class="pin-dot" />
-                        <text x="365" y="263" class="pin-label">D11 (E2)</text>
-
-                        <!-- Pin A3 (Pulsador en pin analógico/digital) -->
-                        <circle id="pin-ard-a3" cx="340" cy="280" r="3.5" class="pin-dot" />
-                        <text x="325" y="273" class="pin-label">A3 (Puls)</text>
-                    </g>
-
-                    <!-- 3. ESP32 DEVKIT V1 (DERECHA ARRIBA) -->
+                    <!-- 2. ESP32 GATEWAY (WEB SERVER) -->
                     <g id="comp-esp32">
-                        <rect x="580" y="40" width="160" height="130" class="component-box esp-box" />
-                        <text x="600" y="65" class="comp-title">ESP32 DevKit</text>
-                        <text x="600" y="80" class="comp-subtitle">Servidor Web WiFi</text>
+                        <rect x="50" y="130" width="160" height="140" class="component-box esp-box" />
+                        <!-- Detalle de la antena de Wi-Fi -->
+                        <path d="M 60 135 L 60 150 M 65 135 L 65 145 M 70 135 L 70 150 M 75 135 L 75 145 M 80 135 L 80 150" stroke="#fbbf24" stroke-width="1.5" fill="none" />
+                        <rect x="90" y="135" width="22" height="15" fill="#27272a" rx="2" stroke="rgba(255,255,255,0.1)" />
+                        <!-- Título -->
+                        <text x="130" y="152" class="comp-title" text-anchor="middle">ESP32 GATEWAY</text>
+                        <text x="130" y="163" class="comp-subtitle" text-anchor="middle">Servidor Web WiFi</text>
 
-                        <!-- Pines ESP32 -->
-                        <!-- Pin RX (GPIO 16) -->
-                        <circle id="pin-esp-rx" cx="580" cy="110" r="3.5" class="pin-dot" />
-                        <text x="590" y="113" class="pin-label">RX2 (16)</text>
+                        <!-- Pins -->
+                        <circle id="pin-esp-tx" cx="210" cy="180" r="3.5" class="pin-dot" />
+                        <text x="200" y="183" class="pin-label" text-anchor="end">TX2 (G17)</text>
 
-                        <!-- Pin TX (GPIO 17) -->
-                        <circle id="pin-esp-tx" cx="580" cy="135" r="3.5" class="pin-dot" />
-                        <text x="590" y="138" class="pin-label">TX2 (17)</text>
+                        <circle id="pin-esp-rx" cx="210" cy="200" r="3.5" class="pin-dot" />
+                        <text x="200" y="203" class="pin-label" text-anchor="end">RX2 (G16)</text>
 
-                        <!-- Pin GND -->
-                        <circle id="pin-esp-gnd" cx="740" cy="110" r="3.5" class="pin-dot" />
-                        <text x="705" y="113" class="pin-label">GND</text>
+                        <circle id="pin-esp-5v" cx="210" cy="220" r="3.5" class="pin-dot" />
+                        <text x="200" y="223" class="pin-label" text-anchor="end">VIN (5V)</text>
+
+                        <circle id="pin-esp-gnd" cx="210" cy="240" r="3.5" class="pin-dot" />
+                        <text x="200" y="243" class="pin-label" text-anchor="end">GND</text>
                     </g>
 
-                    <!-- 4. PUENTE H #1 (CARRO & GIRO) (DERECHA ABAJO / MEDIO) -->
-                    <g id="comp-h1">
-                        <rect x="20" y="320" width="200" height="170" class="component-box hbridge-box" />
-                        <text x="30" y="340" class="comp-title">Puente H #1</text>
-                        <text x="30" y="353" class="comp-subtitle">Motores Carro & Giro</text>
+                    <!-- 3. ARDUINO NANO (MICROCONTROLADOR CENTRAL) -->
+                    <g id="comp-arduino">
+                        <rect x="280" y="130" width="170" height="320" class="component-box arduino-box" />
+                        <!-- Detalle chip Atmega -->
+                        <rect x="345" y="220" width="40" height="40" fill="#1e1e1e" rx="4" stroke="rgba(255,255,255,0.15)" stroke-width="1" />
+                        <circle cx="365" cy="240" r="6" fill="#111" />
+                        <!-- Puerto USB -->
+                        <rect x="345" y="122" width="40" height="12" fill="#475569" rx="1" />
+                        
+                        <text x="365" y="152" class="comp-title" text-anchor="middle">ARDUINO NANO</text>
+                        <text x="365" y="163" class="comp-subtitle" text-anchor="middle">Controlador Principal</text>
 
-                        <!-- Pines de Alimentación -->
-                        <circle id="pin-h1-vm" cx="20" cy="380" r="3.5" class="pin-dot" />
-                        <text x="30" y="383" class="pin-label">VM (9V)</text>
+                        <!-- PINES IZQUIERDA (Alimentación, Comunicación, Controles) -->
+                        <circle id="pin-ard-d0" cx="280" cy="180" r="3.5" class="pin-dot" />
+                        <text x="290" y="183" class="pin-label">D0 (RX)</text>
 
-                        <circle id="pin-h1-vcc" cx="20" cy="400" r="3.5" class="pin-dot" />
-                        <text x="30" y="403" class="pin-label">VCC (5V)</text>
+                        <circle id="pin-ard-d1" cx="280" cy="200" r="3.5" class="pin-dot" />
+                        <text x="290" y="203" class="pin-label">D1 (TX)</text>
 
-                        <circle id="pin-h1-gnd" cx="20" cy="420" r="3.5" class="pin-dot" />
-                        <text x="30" y="423" class="pin-label">GND</text>
+                        <circle id="pin-ard-5v" cx="280" cy="220" r="3.5" class="pin-dot" />
+                        <text x="290" y="223" class="pin-label">5V</text>
 
-                        <!-- Pines de Control -->
-                        <circle id="pin-h1-ain1" cx="220" cy="350" r="3.5" class="pin-dot" />
-                        <text x="175" y="353" class="pin-label">AIN1</text>
+                        <circle id="pin-ard-gnd" cx="280" cy="240" r="3.5" class="pin-dot" />
+                        <text x="290" y="243" class="pin-label">GND</text>
 
-                        <circle id="pin-h1-pwma" cx="220" cy="370" r="3.5" class="pin-dot" />
-                        <text x="175" y="373" class="pin-label">PWMA</text>
+                        <circle id="pin-ard-a3" cx="280" cy="280" r="3.5" class="pin-dot" />
+                        <text x="290" y="283" class="pin-label">A3 (SW)</text>
 
-                        <circle id="pin-h1-ain2" cx="220" cy="390" r="3.5" class="pin-dot" />
-                        <text x="175" y="393" class="pin-label">AIN2</text>
+                        <circle id="pin-ard-a0" cx="280" cy="320" r="3.5" class="pin-dot" />
+                        <text x="290" y="323" class="pin-label">A0 (Giro)</text>
 
-                        <circle id="pin-h1-bin1" cx="220" cy="410" r="3.5" class="pin-dot" />
-                        <text x="175" y="413" class="pin-label">BIN1</text>
+                        <circle id="pin-ard-a1" cx="280" cy="340" r="3.5" class="pin-dot" />
+                        <text x="290" y="343" class="pin-label">A1 (Elev)</text>
 
-                        <circle id="pin-h1-pwmb" cx="220" cy="430" r="3.5" class="pin-dot" />
-                        <text x="175" y="433" class="pin-label">PWMB</text>
+                        <circle id="pin-ard-a2" cx="280" cy="370" r="3.5" class="pin-dot" />
+                        <text x="290" y="373" class="pin-label">A2 (Carro)</text>
 
-                        <circle id="pin-h1-bin2" cx="220" cy="450" r="3.5" class="pin-dot" />
-                        <text x="175" y="453" class="pin-label">BIN2</text>
+                        <!-- PINES DERECHA (Puentes H) -->
+                        <circle id="pin-ard-d2" cx="450" cy="180" r="3.5" class="pin-dot" />
+                        <text x="440" y="183" class="pin-label" text-anchor="end">D2 (AIN1_1)</text>
 
-                        <circle id="pin-h1-stby" cx="220" cy="470" r="3.5" class="pin-dot" />
-                        <text x="175" y="473" class="pin-label">STBY</text>
+                        <circle id="pin-ard-d3" cx="450" cy="200" r="3.5" class="pin-dot" />
+                        <text x="440" y="203" class="pin-label" text-anchor="end">D3 (PWMA_1)</text>
+
+                        <circle id="pin-ard-d4" cx="450" cy="220" r="3.5" class="pin-dot" />
+                        <text x="440" y="223" class="pin-label" text-anchor="end">D4 (AIN2_1)</text>
+
+                        <circle id="pin-ard-d5" cx="450" cy="250" r="3.5" class="pin-dot" />
+                        <text x="440" y="253" class="pin-label" text-anchor="end">D5 (PWMB_1)</text>
+
+                        <circle id="pin-ard-d7" cx="450" cy="270" r="3.5" class="pin-dot" />
+                        <text x="440" y="273" class="pin-label" text-anchor="end">D7 (BIN1_1)</text>
+
+                        <circle id="pin-ard-d8" cx="450" cy="290" r="3.5" class="pin-dot" />
+                        <text x="440" y="293" class="pin-label" text-anchor="end">D8 (BIN2_1)</text>
+
+                        <circle id="pin-ard-d10" cx="450" cy="330" r="3.5" class="pin-dot" />
+                        <text x="440" y="333" class="pin-label" text-anchor="end">D10 (AIN1_2)</text>
+
+                        <circle id="pin-ard-d6" cx="450" cy="355" r="3.5" class="pin-dot" />
+                        <text x="440" y="358" class="pin-label" text-anchor="end">D6 (PWMA_2)</text>
+
+                        <circle id="pin-ard-d11" cx="450" cy="380" r="3.5" class="pin-dot" />
+                        <text x="440" y="383" class="pin-label" text-anchor="end">D11 (AIN2_2)</text>
                     </g>
 
-                    <!-- 5. PUENTE H #2 (ELEVACIÓN) (CENTRO ABAJO) -->
-                    <g id="comp-h2">
-                        <rect x="290" y="320" width="180" height="170" class="component-box hbridge-box" />
-                        <text x="300" y="340" class="comp-title">Puente H #2</text>
-                        <text x="300" y="353" class="comp-subtitle">Motor Elevación</text>
-
-                        <!-- Pines de Alimentación -->
-                        <circle id="pin-h2-vm" cx="290" cy="380" r="3.5" class="pin-dot" />
-                        <text x="300" y="383" class="pin-label">VM (9V)</text>
-
-                        <circle id="pin-h2-vcc" cx="290" cy="400" r="3.5" class="pin-dot" />
-                        <text x="300" y="403" class="pin-label">VCC (5V)</text>
-
-                        <circle id="pin-h2-gnd" cx="290" cy="420" r="3.5" class="pin-dot" />
-                        <text x="300" y="423" class="pin-label">GND</text>
-
-                        <!-- Pines de Control -->
-                        <circle id="pin-h2-ain1" cx="470" cy="360" r="3.5" class="pin-dot" />
-                        <text x="430" y="363" class="pin-label">AIN1</text>
-
-                        <circle id="pin-h2-pwma" cx="470" cy="390" r="3.5" class="pin-dot" />
-                        <text x="430" y="393" class="pin-label">PWMA</text>
-
-                        <circle id="pin-h2-ain2" cx="470" cy="420" r="3.5" class="pin-dot" />
-                        <text x="430" y="423" class="pin-label">AIN2</text>
-
-                        <circle id="pin-h2-stby" cx="470" cy="450" r="3.5" class="pin-dot" />
-                        <text x="430" y="453" class="pin-label">STBY</text>
-                    </g>
-
-                    <!-- 6. JOYSTICK 1 (GIRO & ELEVACIÓN) (DERECHA ABAJO - IZQUIERDA) -->
+                    <!-- 4. JOYSTICK 1 (ROTACIÓN / GIRO Y ELEVACIÓN) -->
                     <g id="comp-joystick1">
-                        <rect x="540" y="320" width="130" height="170" class="component-box joy-box" />
-                        <text x="548" y="342" class="comp-title" style="font-size: 11px;">Joystick 1</text>
-                        <text x="548" y="354" class="comp-subtitle" style="font-size: 7.5px;">Giro y Elevación</text>
+                        <rect x="50" y="310" width="160" height="140" class="component-box joy-box" />
+                        <!-- Detalle visual mando -->
+                        <circle cx="95" cy="380" r="24" fill="#0f172a" stroke="#475569" stroke-width="1" />
+                        <circle cx="95" cy="380" r="10" fill="#1e293b" />
+                        <circle cx="91" cy="376" r="3" fill="#ef4444" />
+                        <!-- Título -->
+                        <text x="130" y="330" class="comp-title" text-anchor="middle">JOYSTICK 1</text>
+                        <text x="130" y="340" class="comp-subtitle" text-anchor="middle">Giro & Elevación</text>
 
-                        <!-- Pines Conector -->
-                        <circle id="pin-joy1-vcc" cx="540" cy="380" r="3.5" class="pin-dot" />
-                        <text x="548" y="383" class="pin-label">VCC (5V)</text>
+                        <!-- Pins -->
+                        <circle id="pin-joy1-vcc" cx="210" cy="360" r="3.5" class="pin-dot" />
+                        <text x="200" y="363" class="pin-label" text-anchor="end">5V (VCC)</text>
 
-                        <circle id="pin-joy1-gnd" cx="540" cy="405" r="3.5" class="pin-dot" />
-                        <text x="548" y="408" class="pin-label">GND</text>
+                        <circle id="pin-joy1-gnd" cx="210" cy="380" r="3.5" class="pin-dot" />
+                        <text x="200" y="383" class="pin-label" text-anchor="end">GND</text>
 
-                        <circle id="pin-joy1-vrx" cx="540" cy="430" r="3.5" class="pin-dot" />
-                        <text x="548" y="433" class="pin-label">VRX (Giro A0)</text>
+                        <circle id="pin-joy1-vrx" cx="210" cy="400" r="3.5" class="pin-dot" />
+                        <text x="200" y="403" class="pin-label" text-anchor="end">VRX (Giro A0)</text>
 
-                        <circle id="pin-joy1-vry" cx="540" cy="455" r="3.5" class="pin-dot" />
-                        <text x="548" y="458" class="pin-label">VRY (Elev A1)</text>
+                        <circle id="pin-joy1-vry" cx="210" cy="420" r="3.5" class="pin-dot" />
+                        <text x="200" y="423" class="pin-label" text-anchor="end">VRY (Elev A1)</text>
                     </g>
 
-                    <!-- 7. JOYSTICK 2 (CARRO & INTERRUPTOR MODO) (DERECHA ABAJO - DERECHA) -->
+                    <!-- 5. JOYSTICK 2 (MOVIMIENTO DEL CARRO & PULSADOR MODO) -->
                     <g id="comp-joystick2">
-                        <rect x="690" y="320" width="130" height="170" class="component-box joy-box" />
-                        <text x="698" y="342" class="comp-title" style="font-size: 11px;">Joystick 2</text>
-                        <text x="698" y="354" class="comp-subtitle" style="font-size: 7.5px;">Carro y Pulsador</text>
+                        <rect x="50" y="490" width="160" height="140" class="component-box joy-box" />
+                        <!-- Detalle visual mando -->
+                        <circle cx="95" cy="560" r="24" fill="#0f172a" stroke="#475569" stroke-width="1" />
+                        <circle cx="95" cy="560" r="10" fill="#1e293b" />
+                        <circle cx="91" cy="556" r="3" fill="#ef4444" />
+                        <!-- Título -->
+                        <text x="130" y="510" class="comp-title" text-anchor="middle">JOYSTICK 2</text>
+                        <text x="130" y="520" class="comp-subtitle" text-anchor="middle">Carro & Pulsador</text>
 
-                        <!-- Pines Conector -->
-                        <circle id="pin-joy2-vcc" cx="690" cy="380" r="3.5" class="pin-dot" />
-                        <text x="698" y="383" class="pin-label">VCC (5V)</text>
+                        <!-- Pins -->
+                        <circle id="pin-joy2-vcc" cx="210" cy="540" r="3.5" class="pin-dot" />
+                        <text x="200" y="543" class="pin-label" text-anchor="end">5V (VCC)</text>
 
-                        <circle id="pin-joy2-gnd" cx="690" cy="405" r="3.5" class="pin-dot" />
-                        <text x="698" y="408" class="pin-label">GND</text>
+                        <circle id="pin-joy2-gnd" cx="210" cy="560" r="3.5" class="pin-dot" />
+                        <text x="200" y="563" class="pin-label" text-anchor="end">GND</text>
 
-                        <circle id="pin-joy2-vrx" cx="690" cy="430" r="3.5" class="pin-dot" />
-                        <text x="698" y="433" class="pin-label">VRX (Carro A2)</text>
+                        <circle id="pin-joy2-vrx" cx="210" cy="580" r="3.5" class="pin-dot" />
+                        <text x="200" y="583" class="pin-label" text-anchor="end">VRX (Carro A2)</text>
 
-                        <!-- Pulsador de Modo -->
-                        <circle id="pin-joy2-puls" cx="755" cy="470" r="4.5" fill="#ff1744" stroke="#fff" />
-                        <text x="702" y="473" class="pin-label">SW (Modo A3)</text>
+                        <circle id="pin-joy2-sw" cx="210" cy="600" r="3.5" class="pin-dot" />
+                        <text x="200" y="603" class="pin-label" text-anchor="end">SW (Modo A3)</text>
+                    </g>
+
+                    <!-- 6. DRIVER MOTOR H-BRIDGE 1 (CARRO & GIRO) -->
+                    <g id="comp-h1">
+                        <rect x="520" y="130" width="170" height="230" class="component-box hbridge-box" />
+                        <text x="605" y="152" class="comp-title" text-anchor="middle">TB6612FNG (1)</text>
+                        <text x="605" y="163" class="comp-subtitle" text-anchor="middle">Motores Carro & Giro</text>
+
+                        <!-- Pines Izquierda (Control) -->
+                        <circle id="pin-h1-vm" cx="520" cy="180" r="3.5" class="pin-dot" />
+                        <text x="530" y="183" class="pin-label">VM (12V)</text>
+
+                        <circle id="pin-h1-vcc" cx="520" cy="200" r="3.5" class="pin-dot" />
+                        <text x="530" y="203" class="pin-label">VCC (5V)</text>
+
+                        <circle id="pin-h1-gnd" cx="520" cy="220" r="3.5" class="pin-dot" />
+                        <text x="530" y="223" class="pin-label">GND</text>
+
+                        <circle id="pin-h1-ain1" cx="520" cy="240" r="3.5" class="pin-dot" />
+                        <text x="530" y="243" class="pin-label">AIN1</text>
+
+                        <circle id="pin-h1-pwma" cx="520" cy="260" r="3.5" class="pin-dot" />
+                        <text x="530" y="263" class="pin-label">PWMA</text>
+
+                        <circle id="pin-h1-ain2" cx="520" cy="280" r="3.5" class="pin-dot" />
+                        <text x="530" y="283" class="pin-label">AIN2</text>
+
+                        <circle id="pin-h1-bin1" cx="520" cy="300" r="3.5" class="pin-dot" />
+                        <text x="530" y="303" class="pin-label">BIN1</text>
+
+                        <circle id="pin-h1-pwmb" cx="520" cy="320" r="3.5" class="pin-dot" />
+                        <text x="530" y="323" class="pin-label">PWMB</text>
+
+                        <circle id="pin-h1-bin2" cx="520" cy="340" r="3.5" class="pin-dot" />
+                        <text x="530" y="343" class="pin-label">BIN2</text>
+
+                        <circle id="pin-h1-stby" cx="520" cy="350" r="3.5" class="pin-dot" />
+                        <text x="530" y="353" class="pin-label">STBY</text>
+
+                        <!-- Pines Derecha (Salidas Motores) -->
+                        <circle id="pin-h1-ao1" cx="690" cy="200" r="3.5" class="pin-dot" />
+                        <text x="680" y="203" class="pin-label" text-anchor="end">AO1</text>
+
+                        <circle id="pin-h1-ao2" cx="690" cy="220" r="3.5" class="pin-dot" />
+                        <text x="680" y="223" class="pin-label" text-anchor="end">AO2</text>
+
+                        <circle id="pin-h1-bo1" cx="690" cy="300" r="3.5" class="pin-dot" />
+                        <text x="680" y="303" class="pin-label" text-anchor="end">BO1</text>
+
+                        <circle id="pin-h1-bo2" cx="690" cy="320" r="3.5" class="pin-dot" />
+                        <text x="680" y="323" class="pin-label" text-anchor="end">BO2</text>
+                    </g>
+
+                    <!-- 7. DRIVER MOTOR H-BRIDGE 2 (ELEVACIÓN) -->
+                    <g id="comp-h2">
+                        <rect x="520" y="410" width="170" height="200" class="component-box hbridge-box" />
+                        <text x="605" y="432" class="comp-title" text-anchor="middle">TB6612FNG (2)</text>
+                        <text x="605" y="443" class="comp-subtitle" text-anchor="middle">Motor Elevación</text>
+
+                        <!-- Pines Izquierda (Control) -->
+                        <circle id="pin-h2-vm" cx="520" cy="460" r="3.5" class="pin-dot" />
+                        <text x="530" y="463" class="pin-label">VM (12V)</text>
+
+                        <circle id="pin-h2-vcc" cx="520" cy="480" r="3.5" class="pin-dot" />
+                        <text x="530" y="483" class="pin-label">VCC (5V)</text>
+
+                        <circle id="pin-h2-gnd" cx="520" cy="500" r="3.5" class="pin-dot" />
+                        <text x="530" y="503" class="pin-label">GND</text>
+
+                        <circle id="pin-h2-ain1" cx="520" cy="530" r="3.5" class="pin-dot" />
+                        <text x="530" y="533" class="pin-label">AIN1</text>
+
+                        <circle id="pin-h2-pwma" cx="520" cy="550" r="3.5" class="pin-dot" />
+                        <text x="530" y="553" class="pin-label">PWMA</text>
+
+                        <circle id="pin-h2-ain2" cx="520" cy="570" r="3.5" class="pin-dot" />
+                        <text x="530" y="573" class="pin-label">AIN2</text>
+
+                        <circle id="pin-h2-stby" cx="520" cy="590" r="3.5" class="pin-dot" />
+                        <text x="530" y="593" class="pin-label">STBY</text>
+
+                        <!-- Pines Derecha (Salidas Motores) -->
+                        <circle id="pin-h2-ao1" cx="690" cy="510" r="3.5" class="pin-dot" />
+                        <text x="680" y="513" class="pin-label" text-anchor="end">AO1</text>
+
+                        <circle id="pin-h2-ao2" cx="690" cy="530" r="3.5" class="pin-dot" />
+                        <text x="680" y="533" class="pin-label" text-anchor="end">AO2</text>
+                    </g>
+
+                    <!-- 8. MOTOR CARRO -->
+                    <g id="comp-motor-carro">
+                        <rect x="780" y="140" width="170" height="110" class="component-box motor-box" />
+                        <!-- Detalle visual del motor (cilindro y bobina) -->
+                        <rect x="800" y="170" width="70" height="50" fill="#475569" rx="3" />
+                        <rect x="870" y="180" width="10" height="30" fill="#1e293b" />
+                        <line x1="880" y1="195" x2="905" y2="195" stroke="#94a3b8" stroke-width="4" /> <!-- Eje -->
+                        <text x="865" y="160" class="comp-title" text-anchor="middle">MOTOR CARRO</text>
+                        
+                        <circle id="pin-m1-pos" cx="780" cy="190" r="3.5" class="pin-dot" />
+                        <text x="795" y="193" class="pin-label">M1+</text>
+
+                        <circle id="pin-m1-neg" cx="780" cy="210" r="3.5" class="pin-dot" />
+                        <text x="795" y="213" class="pin-label">M1-</text>
+                    </g>
+
+                    <!-- 9. MOTOR GIRO -->
+                    <g id="comp-motor-giro">
+                        <rect x="780" y="270" width="170" height="110" class="component-box motor-box" />
+                        <!-- Detalle visual del motor (cilindro y bobina) -->
+                        <rect x="800" y="300" width="70" height="50" fill="#475569" rx="3" />
+                        <rect x="870" y="310" width="10" height="30" fill="#1e293b" />
+                        <line x1="880" y1="325" x2="905" y2="325" stroke="#94a3b8" stroke-width="4" /> <!-- Eje -->
+                        <text x="865" y="290" class="comp-title" text-anchor="middle">MOTOR GIRO</text>
+                        
+                        <circle id="pin-m2-pos" cx="780" cy="320" r="3.5" class="pin-dot" />
+                        <text x="795" y="323" class="pin-label">M2+</text>
+
+                        <circle id="pin-m2-neg" cx="780" cy="340" r="3.5" class="pin-dot" />
+                        <text x="795" y="343" class="pin-label">M2-</text>
+                    </g>
+
+                    <!-- 10. MOTOR ELEVACIÓN -->
+                    <g id="comp-motor-elev">
+                        <rect x="780" y="440" width="170" height="110" class="component-box motor-box" />
+                        <!-- Detalle visual del motor (cilindro y bobina) -->
+                        <rect x="800" y="470" width="70" height="50" fill="#475569" rx="3" />
+                        <rect x="870" y="480" width="10" height="30" fill="#1e293b" />
+                        <line x1="880" y1="495" x2="905" y2="495" stroke="#94a3b8" stroke-width="4" /> <!-- Eje -->
+                        <text x="865" y="460" class="comp-title" text-anchor="middle">MOTOR ELEVACIÓN</text>
+                        
+                        <circle id="pin-m3-pos" cx="780" cy="490" r="3.5" class="pin-dot" />
+                        <text x="795" y="493" class="pin-label">M3+</text>
+
+                        <circle id="pin-m3-neg" cx="780" cy="510" r="3.5" class="pin-dot" />
+                        <text x="795" y="513" class="pin-label">M3-</text>
                     </g>
 
 
-                    <!-- ================= CABLES DE CIRCUITOS ================= -->
+                    <!-- ================= CABLES DE CIRCUITOS (CONEXIONES) ================= -->
 
-                    <!-- === CATEGORÍA 1: ALIMENTACIÓN (Rojo) === -->
-                    <!-- Batt + (9V) a VM de Puente H #1 -->
-                    <path d="M 50 40 L 50 15 L 10 15 L 10 380 L 20 380" class="wire-line power" data-connection-id="pow-vm1" />
-                    <!-- VM Puente H #1 a VM de Puente H #2 -->
-                    <path d="M 20 380 L 10 380 L 10 505 L 280 505 L 280 380 L 290 380" class="wire-line power" data-connection-id="pow-vm2" />
+                    <!-- === UART COMUNICACIÓN SERIAL (Fucsia) === -->
+                    <!-- ESP32 TX2 -> Arduino Nano RX (D0) -->
+                    <path d="M 210 180 L 235 180 L 235 160 L 255 160 L 255 180 L 280 180" class="wire-line uart" data-connection-id="uart-rx" />
+                    <!-- Arduino Nano TX (D1) -> ESP32 RX2 -->
+                    <path d="M 280 200 L 255 200 L 255 215 L 235 215 L 235 200 L 210 200" class="wire-line uart" data-connection-id="uart-tx" />
+
+                    <!-- === VCC ALIMENTACIÓN LÓGICA 5V (Rosa) === -->
+                    <!-- Arduino 5V -> ESP32 VIN (5V) -->
+                    <path d="M 280 220 L 210 220" class="wire-line power" data-connection-id="pow-ard-esp" />
+                    <!-- Arduino 5V -> H1 VCC -->
+                    <path d="M 280 220 L 300 220 L 300 110 L 490 110 L 490 200 L 520 200" class="wire-line power" data-connection-id="pow-ard-vcc1" />
+                    <!-- Derivación H1 VCC -> H2 VCC -->
+                    <path d="M 490 200 L 490 480 L 520 480" class="wire-line power" data-connection-id="pow-ard-vcc2" />
+                    <!-- Derivación Arduino 5V -> Joystick 1 VCC -->
+                    <path d="M 280 220 L 240 220 L 240 360 L 210 360" class="wire-line power" data-connection-id="pow-ard-vcc3" />
+                    <!-- Derivación Joystick 1 VCC -> Joystick 2 VCC -->
+                    <path d="M 240 360 L 240 540 L 210 540" class="wire-line power" data-connection-id="pow-ard-vcc3" />
                     
-                    <!-- Arduino 5V a VCC de H1, H2, Joystick -->
-                    <!-- 5V a H1 VCC -->
-                    <path d="M 260 170 L 245 170 L 245 305 L 15 305 L 15 400 L 20 400" class="wire-line power" data-connection-id="pow-ard-vcc1" />
-                    <!-- 5V a H2 VCC -->
-                    <path d="M 245 305 L 275 305 L 275 400 L 290 400" class="wire-line power" data-connection-id="pow-ard-vcc2" />
-                    <!-- 5V a Joystick VCC -->
-                    <path d="M 245 305 L 510 305 L 510 380 L 540 380" class="wire-line power" data-connection-id="pow-ard-vcc3" />
-                    <path d="M 510 380 L 510 310 L 660 310 L 660 380 L 690 380" class="wire-line power" data-connection-id="pow-ard-vcc3" />
+                    <!-- H1 STBY -> H1 VCC (Habilita el driver) -->
+                    <path d="M 520 350 L 500 350 L 500 200 L 520 200" class="wire-line power" data-connection-id="pow-stby1" />
+                    <!-- H2 STBY -> H2 VCC (Habilita el driver) -->
+                    <path d="M 520 590 L 500 590 L 500 480 L 520 480" class="wire-line power" data-connection-id="pow-stby2" />
 
-                    <!-- STBY a VCC en H1 -->
-                    <path d="M 220 470 L 235 470 L 235 480 L 15 480 L 15 400" class="wire-line power" data-connection-id="pow-stby1" />
-                    <!-- STBY a VCC en H2 -->
-                    <path d="M 470 450 L 485 450 L 485 480 L 275 480 L 275 400" class="wire-line power" data-connection-id="pow-stby2" />
+                    <!-- === VCC POTENCIA MOTORES 12V DC (Naranja Dashed) === -->
+                    <!-- Fuente +12V -> Driver 1 VM -->
+                    <path d="M 450 90 L 450 120 L 510 120 L 510 180 L 520 180" class="wire-line powext" data-connection-id="pow-vm1" />
+                    <!-- Derivación Driver 1 VM -> Driver 2 VM -->
+                    <path d="M 510 180 L 510 460 L 520 460" class="wire-line powext" data-connection-id="pow-vm2" />
 
+                    <!-- === GND TIERRAS COMUNES (Esmeralda) === -->
+                    <!-- Fuente GND -> Arduino GND -->
+                    <path d="M 550 90 L 550 100 L 470 100 L 470 240 L 280 240" class="wire-line gnd" data-connection-id="gnd-comm" />
+                    <!-- ESP32 GND -> Arduino GND -->
+                    <path d="M 210 240 L 280 240" class="wire-line gnd" data-connection-id="gnd-esp" />
+                    <!-- Driver H1 GND -> Arduino GND -->
+                    <path d="M 520 220 L 470 220 L 470 240" class="wire-line gnd" data-connection-id="gnd-h1" />
+                    <!-- Driver H2 GND -> Arduino GND -->
+                    <path d="M 520 500 L 470 500 L 470 220" class="wire-line gnd" data-connection-id="gnd-h2" />
+                    <!-- Joystick 1 GND -> Arduino GND -->
+                    <path d="M 210 380 L 225 380 L 225 240 L 280 240" class="wire-line gnd" data-connection-id="gnd-joy1" />
+                    <!-- Joystick 2 GND -> Arduino GND -->
+                    <path d="M 210 560 L 225 560 L 225 380" class="wire-line gnd" data-connection-id="gnd-joy2" />
 
-                    <!-- === CATEGORÍA 2: TIERRAS GND (Verde) === -->
-                    <!-- Batt - (GND) a GND común -->
-                    <path d="M 90 40 L 90 20 L 230 20 L 230 190 L 260 190" class="wire-line gnd" data-connection-id="gnd-comm" />
-                    
-                    <!-- ESP32 GND a GND común -->
-                    <path d="M 740 110 L 760 110 L 760 10 L 230 10 L 230 190" class="wire-line gnd" data-connection-id="gnd-esp" />
-                    
-                    <!-- Bus de Tierra Común (GND) -->
-                    <path d="M 20 420 L 5 420 L 5 295 L 760 295" class="wire-line gnd" data-connection-id="gnd-comm" />
-                    <path d="M 230 295 L 230 190" class="wire-line gnd" data-connection-id="gnd-comm" />
-                    
-                    <!-- H1 GND a Bus GND -->
-                    <!-- H1 GND ya se conecta por el bus principal -->
-                    
-                    <!-- H2 GND a Bus GND -->
-                    <path d="M 290 420 L 255 420 L 255 295" class="wire-line gnd" data-connection-id="gnd-h2" />
+                    <!-- === JOYSTICKS / ENTRADAS (Ámbar) === -->
+                    <!-- Joy1 VRX (Giro) -> Arduino A0 -->
+                    <path d="M 210 400 L 250 400 L 250 320 L 280 320" class="wire-line joy" data-connection-id="sig-joy1x" />
+                    <!-- Joy1 VRY (Elev) -> Arduino A1 -->
+                    <path d="M 210 420 L 260 420 L 260 340 L 280 340" class="wire-line joy" data-connection-id="sig-joy1y" />
+                    <!-- Joy2 VRX (Carro) -> Arduino A2 -->
+                    <path d="M 210 580 L 270 580 L 270 370 L 280 370" class="wire-line joy" data-connection-id="sig-joy2x" />
+                    <!-- Joy2 SW (Pulsador Modo) -> Arduino A3 -->
+                    <path d="M 210 600 L 260 600 L 260 280 L 280 280" class="wire-line joy" data-connection-id="sig-joybtn" />
 
-                    <!-- Joystick 1 GND a Bus GND -->
-                    <path d="M 540 405 L 525 405 L 525 295" class="wire-line gnd" data-connection-id="gnd-joy1" />
+                    <!-- === SEÑALES CONTROL DRIVERS (Cian) === -->
+                    <!-- Motor Carro (Nano -> Driver 1) -->
+                    <!-- D2 (AIN1) -> H1 AIN1 -->
+                    <path d="M 450 170 L 460 170 L 460 240 L 520 240" class="wire-line motor" data-connection-id="mot-c1" stroke-dasharray="3,2" />
+                    <!-- D3 (PWM) -> H1 PWMA -->
+                    <path d="M 450 200 L 465 200 L 465 260 L 520 260" class="wire-line motor" data-connection-id="mot-cp" />
+                    <!-- D4 (AIN2) -> H1 AIN2 -->
+                    <path d="M 450 220 L 470 220 L 470 280 L 520 280" class="wire-line motor" data-connection-id="mot-c2" stroke-dasharray="3,2" />
 
-                    <!-- Joystick 2 GND a Bus GND -->
-                    <path d="M 690 405 L 675 405 L 675 295" class="wire-line gnd" data-connection-id="gnd-joy2" />
+                    <!-- Motor Giro (Nano -> Driver 1) -->
+                    <!-- D7 (BIN1) -> H1 BIN1 -->
+                    <path d="M 450 270 L 480 270 L 480 300 L 520 300" class="wire-line motor" data-connection-id="mot-g1" stroke-dasharray="3,2" />
+                    <!-- D5 (PWM) -> H1 PWMB -->
+                    <path d="M 450 250 L 475 250 L 475 320 L 520 320" class="wire-line motor" data-connection-id="mot-gp" />
+                    <!-- D8 (BIN2) -> H1 BIN2 -->
+                    <path d="M 450 290 L 470 290 L 470 340 L 520 340" class="wire-line motor" data-connection-id="mot-g2" stroke-dasharray="3,2" />
 
+                    <!-- Motor Elevación (Nano -> Driver 2) -->
+                    <!-- D10 (AIN1) -> H2 AIN1 -->
+                    <path d="M 450 330 L 460 330 L 460 530 L 520 530" class="wire-line motor" data-connection-id="mot-e1" stroke-dasharray="3,2" />
+                    <!-- D6 (PWM) -> H2 PWMA -->
+                    <path d="M 450 355 L 465 355 L 465 550 L 520 550" class="wire-line motor" data-connection-id="mot-ep" />
+                    <!-- D11 (AIN2) -> H2 AIN2 -->
+                    <path d="M 450 380 L 470 380 L 470 570 L 520 570" class="wire-line motor" data-connection-id="mot-e2" stroke-dasharray="3,2" />
 
-                    <!-- === CATEGORÍA 3: COMUNICACIÓN SERIAL UART (Violeta) === -->
-                    <!-- Arduino D0 (RX) a ESP32 TX2 (17) -->
-                    <path d="M 260 110 L 240 110 L 240 50 L 570 50 L 570 135 L 580 135" class="wire-line uart" data-connection-id="uart-rx" />
-                    <!-- Arduino D1 (TX) a ESP32 RX2 (16) -->
-                    <path d="M 260 130 L 250 130 L 250 95 L 565 95 L 565 110 L 580 110" class="wire-line uart" data-connection-id="uart-tx" />
-
-
-                    <!-- === CATEGORÍA 4: JOYSTICKS E INTERRUPTORES (Amarillo) === -->
-                    <!-- Joy1 X a Arduino A0 -->
-                    <path d="M 540 430 L 515 430 L 515 220 L 260 220" class="wire-line joy" data-connection-id="sig-joy1x" />
-                    <!-- Joy1 Y a Arduino A1 -->
-                    <path d="M 540 455 L 520 455 L 520 240 L 260 240" class="wire-line joy" data-connection-id="sig-joy1y" />
-                    <!-- Joy2 X a Arduino A2 -->
-                    <path d="M 690 430 L 530 430 L 530 260 L 260 260" class="wire-line joy" data-connection-id="sig-joy2x" />
-                    <!-- Joy Pulsador a Arduino A3 -->
-                    <path d="M 755 470 L 755 515 L 340 515 L 340 283" class="wire-line joy" data-connection-id="sig-joybtn" />
-
-
-                    <!-- === CATEGORÍA 5: CONTROL DE MOTORES (Celeste) === -->
-                    <!-- Puente H #1 -->
-                    <!-- Arduino D2 (Carro AIN1) a H1 AIN1 -->
-                    <path d="M 420 100 L 440 100 L 440 215 L 210 215 L 210 335 L 220 335" class="wire-line motor" data-connection-id="mot-c1" stroke-dasharray="3,3" />
-                    <!-- Arduino D3 (Carro PWMA) a H1 PWMA -->
-                    <path d="M 420 120 L 445 120 L 445 350 L 235 350 L 235 370 L 220 370" class="wire-line motor" data-connection-id="mot-cp" />
-                    <!-- Arduino D4 (Carro AIN2) a H1 AIN2 -->
-                    <path d="M 420 140 L 450 140 L 450 390 L 220 390" class="wire-line motor" data-connection-id="mot-c2" stroke-dasharray="3,3" />
-                    
-                    <!-- Arduino D7 (Giro BIN1) a H1 BIN1 -->
-                    <path d="M 420 200 L 460 200 L 460 410 L 220 410" class="wire-line motor" data-connection-id="mot-g1" stroke-dasharray="3,3" />
-                    <!-- Arduino D5 (Giro PWMB) a H1 PWMB -->
-                    <path d="M 420 160 L 455 160 L 455 430 L 220 430" class="wire-line motor" data-connection-id="mot-gp" />
-                    <!-- Arduino D8 (Giro BIN2) a H1 BIN2 -->
-                    <path d="M 420 220 L 465 220 L 465 450 L 220 450" class="wire-line motor" data-connection-id="mot-g2" stroke-dasharray="3,3" />
-
-                    <!-- Puente H #2 -->
-                    <!-- Arduino D10 (Elev AIN1) a H2 AIN1 -->
-                    <path d="M 420 240 L 485 240 L 485 360 L 470 360" class="wire-line motor" data-connection-id="mot-e1" stroke-dasharray="3,3" />
-                    <!-- Arduino D6 (Elev PWMA) a H2 PWMA -->
-                    <path d="M 420 180 L 475 180 L 475 390 L 470 390" class="wire-line motor" data-connection-id="mot-ep" />
-                    <!-- Arduino D11 (Elev AIN2) a H2 AIN2 -->
-                    <path d="M 420 260 L 490 260 L 490 420 L 470 420" class="wire-line motor" data-connection-id="mot-e2" stroke-dasharray="3,3" />
+                    <!-- === SALIDAS MOTORES (Cian Liso de Potencia) === -->
+                    <!-- Driver 1 AO1/AO2 -> Motor Carro -->
+                    <path d="M 690 200 L 735 200 L 735 190 L 780 190 M 690 220 L 735 220 L 735 210 L 780 210" class="wire-line motor" data-connection-id="out-carro" />
+                    <!-- Driver 1 BO1/BO2 -> Motor Giro -->
+                    <path d="M 690 300 L 735 300 L 735 320 L 780 320 M 690 320 L 735 320 L 735 340 L 780 340" class="wire-line motor" data-connection-id="out-giro" />
+                    <!-- Driver 2 AO1/AO2 -> Motor Elevación -->
+                    <path d="M 690 510 L 735 510 L 735 490 L 780 490 M 690 530 L 735 530 L 735 510 L 780 510" class="wire-line motor" data-connection-id="out-elev" />
 
                 </svg>
             </div>
             
-            <div class="notes-card" style="margin-top: 5px;">
-                💡 <strong>Consejo Interactivo:</strong> Pasa el ratón (hover) sobre cualquier fila de la tabla o sobre cualquier cable del diagrama para ver su ruta iluminada en tiempo real. <strong>Haz clic sobre un cable</strong> para desplazarte automáticamente y enfocar esa conexión en la tabla lateral.
+            <!-- PANEL DE INFORMACIÓN DETALLADA AL HACER HOVER -->
+            <div class="info-panel">
+                <div class="info-title" id="wireName">
+                    💡 Información de Conexión
+                </div>
+                <div class="info-desc" id="wireDesc">
+                    Pasa el cursor sobre cualquiera de los cables de colores en el esquema o haz clic para centrar la fila correspondiente en la tabla.
+                </div>
             </div>
         </div>
 
@@ -742,15 +841,15 @@
             <h2>Mapeo de Conexiones</h2>
             
             <!-- Buscador y Filtros -->
-            <input type="text" id="searchBox" class="search-box" placeholder="🔎 Buscar conexión (ej: A0, ESP32, GND, Motor)...">
+            <input type="text" id="searchBox" class="search-box" placeholder="🔎 Buscar conexión (ej: A0, ESP32, GND, Motor, D3)...">
             
             <div class="filters">
                 <button class="filter-btn active" data-filter="all">Todos</button>
                 <button class="filter-btn" data-filter="power">Alimentación</button>
-                <button class="filter-btn" data-filter="gnd">Tierra (GND)</button>
+                <button class="filter-btn" data-filter="gnd">Tierras (GND)</button>
                 <button class="filter-btn" data-filter="uart">UART Serial</button>
-                <button class="filter-btn" data-filter="motor">Motores / Puente H</button>
-                <button class="filter-btn" data-filter="joy">Joystick Inputs</button>
+                <button class="filter-btn" data-filter="motor">Motores / PWM</button>
+                <button class="filter-btn" data-filter="joy">Joysticks</button>
             </div>
 
             <!-- Tabla de Referencia -->
@@ -758,189 +857,215 @@
                 <table id="connectionsTable">
                     <thead>
                         <tr>
-                            <th>Categoría</th>
+                            <th>Tipo</th>
                             <th>Origen (Desde)</th>
                             <th>Destino (Hacia)</th>
-                            <th>Propósito / Función</th>
+                            <th>Función / Señal</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Categoría: Alimentación -->
-                        <tr data-category="power" data-connection-id="pow-vm1">
-                            <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Batería 9V (+)</span></td>
-                            <td><span class="pin-tag">H1 VM (Pin 1)</span></td>
-                            <td>Suministro principal para motores del Carro y Giro.</td>
+                        <!-- Categoría: UART -->
+                        <tr data-category="uart" data-connection-id="uart-rx">
+                            <td><span class="badge badge-uart">UART</span></td>
+                            <td><span class="pin-tag">ESP32 GPIO 17 (TX2)</span></td>
+                            <td><span class="pin-tag">Arduino Nano D0 (RX)</span></td>
+                            <td>Recepción en Nano de comandos web del ESP32.</td>
                         </tr>
-                        <tr data-category="power" data-connection-id="pow-vm2">
+                        <tr data-category="uart" data-connection-id="uart-tx">
+                            <td><span class="badge badge-uart">UART</span></td>
+                            <td><span class="pin-tag">Arduino Nano D1 (TX)</span></td>
+                            <td><span class="pin-tag">ESP32 GPIO 16 (RX2)</span></td>
+                            <td>Envío de telemetría serial JSON hacia la interfaz web.</td>
+                        </tr>
+
+                        <!-- Categoría: Alimentación -->
+                        <tr data-category="power" data-connection-id="pow-ard-esp">
                             <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Batería 9V (+)</span></td>
-                            <td><span class="pin-tag">H2 VM (Pin 1)</span></td>
-                            <td>Suministro principal para motor de Elevación (300 RPM).</td>
+                            <td><span class="pin-tag">Arduino Nano 5V</span></td>
+                            <td><span class="pin-tag">ESP32 VIN (5V)</span></td>
+                            <td>Línea lógica de 5V compartida para alimentar al ESP32.</td>
                         </tr>
                         <tr data-category="power" data-connection-id="pow-ard-vcc1">
                             <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Arduino 5V</span></td>
+                            <td><span class="pin-tag">Arduino Nano 5V</span></td>
                             <td><span class="pin-tag">H1 VCC</span></td>
-                            <td>Energía lógica de 5V para el chip de control TB6612 #1.</td>
+                            <td>Energía de 5V para la lógica del Puente H #1.</td>
                         </tr>
                         <tr data-category="power" data-connection-id="pow-ard-vcc2">
                             <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Arduino 5V</span></td>
+                            <td><span class="pin-tag">Arduino Nano 5V</span></td>
                             <td><span class="pin-tag">H2 VCC</span></td>
-                            <td>Energía lógica de 5V para el chip de control TB6612 #2.</td>
+                            <td>Energía de 5V para la lógica del Puente H #2.</td>
                         </tr>
                         <tr data-category="power" data-connection-id="pow-ard-vcc3">
                             <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Arduino 5V</span></td>
-                            <td><span class="pin-tag">Joystick VCC</span></td>
-                            <td>Voltaje de referencia y alimentación para sensores analógicos.</td>
+                            <td><span class="pin-tag">Arduino Nano 5V</span></td>
+                            <td><span class="pin-tag">Joysticks VCC</span></td>
+                            <td>Referencia analógica de 5V para Joystick 1 y Joystick 2.</td>
                         </tr>
                         <tr data-category="power" data-connection-id="pow-stby1">
                             <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Puente H1 VCC (5V)</span></td>
+                            <td><span class="pin-tag">H1 VCC (5V)</span></td>
                             <td><span class="pin-tag">H1 STBY</span></td>
-                            <td>Habilita el puente H1 (Standby desactivado / tirado a VCC).</td>
+                            <td>Habilita de forma permanente las salidas del Puente H #1.</td>
                         </tr>
                         <tr data-category="power" data-connection-id="pow-stby2">
                             <td><span class="badge badge-power">Alimentación</span></td>
-                            <td><span class="pin-tag">Puente H2 VCC (5V)</span></td>
+                            <td><span class="pin-tag">H2 VCC (5V)</span></td>
                             <td><span class="pin-tag">H2 STBY</span></td>
-                            <td>Habilita el puente H2 (Standby desactivado / tirado a VCC).</td>
+                            <td>Habilita de forma permanente las salidas del Puente H #2.</td>
+                        </tr>
+                        <tr data-category="power" data-connection-id="pow-vm1">
+                            <td><span class="badge badge-power">Alimentación</span></td>
+                            <td><span class="pin-tag">Fuente +12V</span></td>
+                            <td><span class="pin-tag">H1 VM</span></td>
+                            <td>Tensión externa de 12V para fuerza en Motores Carro y Giro.</td>
+                        </tr>
+                        <tr data-category="power" data-connection-id="pow-vm2">
+                            <td><span class="badge badge-power">Alimentación</span></td>
+                            <td><span class="pin-tag">Fuente +12V</span></td>
+                            <td><span class="pin-tag">H2 VM</span></td>
+                            <td>Tensión externa de 12V para fuerza en Motor de Elevación.</td>
                         </tr>
 
-                        <!-- Categoría: Tierra -->
+                        <!-- Categoría: Tierras -->
                         <tr data-category="gnd" data-connection-id="gnd-comm">
-                            <td><span class="badge badge-gnd">Tierra</span></td>
-                            <td><span class="pin-tag">Batería 9V (-)</span></td>
-                            <td><span class="pin-tag">Arduino GND</span></td>
-                            <td>Tierra común de referencia eléctrica del sistema.</td>
+                            <td><span class="badge badge-gnd">GND</span></td>
+                            <td><span class="pin-tag">Fuente GND</span></td>
+                            <td><span class="pin-tag">Arduino Nano GND</span></td>
+                            <td>Retorno común y masa de referencia para toda la electrónica.</td>
                         </tr>
                         <tr data-category="gnd" data-connection-id="gnd-esp">
-                            <td><span class="badge badge-gnd">Tierra</span></td>
+                            <td><span class="badge badge-gnd">GND</span></td>
                             <td><span class="pin-tag">ESP32 GND</span></td>
-                            <td><span class="pin-tag">Arduino GND</span></td>
-                            <td>Tierra común para comunicación serial y alimentación lógica.</td>
+                            <td><span class="pin-tag">Arduino Nano GND</span></td>
+                            <td>Masa común para comunicación y alimentación.</td>
                         </tr>
                         <tr data-category="gnd" data-connection-id="gnd-h1">
-                            <td><span class="badge badge-gnd">Tierra</span></td>
+                            <td><span class="badge badge-gnd">GND</span></td>
                             <td><span class="pin-tag">H1 GND</span></td>
-                            <td><span class="pin-tag">Arduino GND</span></td>
-                            <td>Retorno de tierra de potencia lógica y motores en TB6612 #1.</td>
+                            <td><span class="pin-tag">Arduino Nano GND</span></td>
+                            <td>Tierra de potencia y lógica unida del Puente H #1.</td>
                         </tr>
                         <tr data-category="gnd" data-connection-id="gnd-h2">
-                            <td><span class="badge badge-gnd">Tierra</span></td>
+                            <td><span class="badge badge-gnd">GND</span></td>
                             <td><span class="pin-tag">H2 GND</span></td>
-                            <td><span class="pin-tag">Arduino GND</span></td>
-                            <td>Retorno de tierra de potencia lógica y motores en TB6612 #2.</td>
+                            <td><span class="pin-tag">Arduino Nano GND</span></td>
+                            <td>Tierra de potencia y lógica unida del Puente H #2.</td>
                         </tr>
                         <tr data-category="gnd" data-connection-id="gnd-joy1">
-                            <td><span class="badge badge-gnd">Tierra</span></td>
+                            <td><span class="badge badge-gnd">GND</span></td>
                             <td><span class="pin-tag">Joystick 1 GND</span></td>
-                            <td><span class="pin-tag">GND Común</span></td>
-                            <td>Línea de retorno para las lecturas analógicas del Joystick 1.</td>
+                            <td><span class="pin-tag">Arduino Nano GND</span></td>
+                            <td>Retorno analógico del Joystick de Giro y Elevación.</td>
                         </tr>
                         <tr data-category="gnd" data-connection-id="gnd-joy2">
-                            <td><span class="badge badge-gnd">Tierra</span></td>
+                            <td><span class="badge badge-gnd">GND</span></td>
                             <td><span class="pin-tag">Joystick 2 GND</span></td>
-                            <td><span class="pin-tag">GND Común</span></td>
-                            <td>Línea de retorno para las lecturas y el botón del Joystick 2.</td>
+                            <td><span class="pin-tag">Arduino Nano GND</span></td>
+                            <td>Retorno analógico y del switch del Joystick de Carro.</td>
                         </tr>
 
-                        <!-- Categoría: UART -->
-                        <tr data-category="uart" data-connection-id="uart-rx">
-                            <td><span class="badge badge-uart">UART Serial</span></td>
-                            <td><span class="pin-tag">Arduino D0 (RX)</span></td>
-                            <td><span class="pin-tag">ESP32 GPIO 17 (TX2)</span></td>
-                            <td>Recepción en Nano de comandos web enviados por el ESP32.</td>
-                        </tr>
-                        <tr data-category="uart" data-connection-id="uart-tx">
-                            <td><span class="badge badge-uart">UART Serial</span></td>
-                            <td><span class="pin-tag">Arduino D1 (TX)</span></td>
-                            <td><span class="pin-tag">ESP32 GPIO 16 (RX2)</span></td>
-                            <td>Transmisión de telemetría serial JSON desde el Nano hacia la Web.</td>
-                        </tr>
-
-                        <!-- Categoría: Joystick -->
+                        <!-- Categoría: Joysticks -->
                         <tr data-category="joy" data-connection-id="sig-joy1x">
                             <td><span class="badge badge-joy">Joystick</span></td>
                             <td><span class="pin-tag">Joystick 1 VRX</span></td>
                             <td><span class="pin-tag">Arduino A0</span></td>
-                            <td>Lectura analógica para control de Giro/Rotación (Joystick 1 Eje X).</td>
+                            <td>Lectura analógica para el control de Giro (Rotación).</td>
                         </tr>
                         <tr data-category="joy" data-connection-id="sig-joy1y">
                             <td><span class="badge badge-joy">Joystick</span></td>
                             <td><span class="pin-tag">Joystick 1 VRY</span></td>
                             <td><span class="pin-tag">Arduino A1</span></td>
-                            <td>Lectura analógica para control de Elevación/Gancho (Joystick 1 Eje Y).</td>
+                            <td>Lectura analógica para el control de Elevación (Gancho).</td>
                         </tr>
                         <tr data-category="joy" data-connection-id="sig-joy2x">
                             <td><span class="badge badge-joy">Joystick</span></td>
                             <td><span class="pin-tag">Joystick 2 VRX</span></td>
                             <td><span class="pin-tag">Arduino A2</span></td>
-                            <td>Lectura analógica para control de Carro horizontal (Joystick 2 Eje X).</td>
+                            <td>Lectura analógica para el control del Carro horizontal.</td>
                         </tr>
                         <tr data-category="joy" data-connection-id="sig-joybtn">
                             <td><span class="badge badge-joy">Joystick</span></td>
                             <td><span class="pin-tag">Joystick 2 SW</span></td>
                             <td><span class="pin-tag">Arduino A3</span></td>
-                            <td>Pulsador digital de cambio de modo (Joystick 2 pulsador). Debounce de 50ms.</td>
+                            <td>Pulsador digital de cambio de modo de control (Local/Web).</td>
                         </tr>
 
-                        <!-- Categoría: Motores -->
+                        <!-- Categoría: Motor Control / PWM -->
                         <tr data-category="motor" data-connection-id="mot-c1">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D2</span></td>
                             <td><span class="pin-tag">H1 AIN1</span></td>
-                            <td>Control de dirección 1 para el motor del Carro horizontal.</td>
+                            <td>Dirección 1 de giro del motor del Carro horizontal.</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-cp">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D3 (PWM)</span></td>
                             <td><span class="pin-tag">H1 PWMA</span></td>
-                            <td>Regulación de velocidad por PWM del motor del Carro.</td>
+                            <td>Regulación por modulación de ancho de pulso del Motor Carro.</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-c2">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D4</span></td>
                             <td><span class="pin-tag">H1 AIN2</span></td>
-                            <td>Control de dirección 2 para el motor del Carro horizontal.</td>
+                            <td>Dirección 2 de giro del motor del Carro horizontal.</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-g1">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D7</span></td>
                             <td><span class="pin-tag">H1 BIN1</span></td>
-                            <td>Control de dirección 1 para el motorreductor de Giro (30 RPM).</td>
+                            <td>Dirección 1 de giro del motor de Rotación (Giro).</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-gp">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D5 (PWM)</span></td>
                             <td><span class="pin-tag">H1 PWMB</span></td>
-                            <td>Regulación de velocidad por PWM del motor de Giro.</td>
+                            <td>Regulación por modulación de ancho de pulso del Motor Giro.</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-g2">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D8</span></td>
                             <td><span class="pin-tag">H1 BIN2</span></td>
-                            <td>Control de dirección 2 para el motorreductor de Giro (30 RPM).</td>
+                            <td>Dirección 2 de giro del motor de Rotación (Giro).</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-e1">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D10</span></td>
                             <td><span class="pin-tag">H2 AIN1</span></td>
-                            <td>Control de dirección 1 para el motor de Elevación (300 RPM).</td>
+                            <td>Dirección 1 de giro (subir) para el motor de Elevación.</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-ep">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D6 (PWM)</span></td>
                             <td><span class="pin-tag">H2 PWMA</span></td>
-                            <td>Regulación de velocidad por PWM de la Elevación.</td>
+                            <td>Regulación por modulación de ancho de pulso de Elevación.</td>
                         </tr>
                         <tr data-category="motor" data-connection-id="mot-e2">
-                            <td><span class="badge badge-motor">Motores</span></td>
+                            <td><span class="badge badge-motor">PWM</span></td>
                             <td><span class="pin-tag">Arduino D11</span></td>
                             <td><span class="pin-tag">H2 AIN2</span></td>
-                            <td>Control de dirección 2 para el motor de Elevación (300 RPM).</td>
+                            <td>Dirección 2 de giro (bajar) para el motor de Elevación.</td>
+                        </tr>
+
+                        <!-- Categoría: Salidas Potencia -->
+                        <tr data-category="motor" data-connection-id="out-carro">
+                            <td><span class="badge badge-motor">Fuerza</span></td>
+                            <td><span class="pin-tag">H1 AO1/AO2</span></td>
+                            <td><span class="pin-tag">Motor Carro M1+/M1-</span></td>
+                            <td>Salidas de potencia amplificada de 12V del driver hacia el Motor Carro.</td>
+                        </tr>
+                        <tr data-category="motor" data-connection-id="out-giro">
+                            <td><span class="badge badge-motor">Fuerza</span></td>
+                            <td><span class="pin-tag">H1 BO1/BO2</span></td>
+                            <td><span class="pin-tag">Motor Giro M2+/M2-</span></td>
+                            <td>Salidas de potencia amplificada de 12V del driver hacia el Motor Giro.</td>
+                        </tr>
+                        <tr data-category="motor" data-connection-id="out-elev">
+                            <td><span class="badge badge-motor">Fuerza</span></td>
+                            <td><span class="pin-tag">H2 AO1/AO2</span></td>
+                            <td><span class="pin-tag">Motor Elev M3+/M3-</span></td>
+                            <td>Salidas de potencia amplificada de 12V del driver hacia el Motor Elevación.</td>
                         </tr>
                     </tbody>
                 </table>
@@ -956,15 +1081,32 @@
             const svgWires = document.querySelectorAll('.wire-line');
             const filterButtons = document.querySelectorAll('.filter-btn');
             const searchBox = document.getElementById('searchBox');
-
-            // --- 1. LÓGICA DE HOVER BIDIRECCIONAL ---
             
-            // Hover en la tabla -> Activa SVG
+            const infoTitle = document.getElementById('wireName');
+            const infoDesc = document.getElementById('wireDesc');
+
+            // --- 1. LÓGICA DE HOVER Y DETALLES DEL PANEL ---
+
+            // Hover en la tabla -> Activa SVG y el info-panel
             tableRows.forEach(row => {
                 row.addEventListener('mouseenter', () => {
                     const connId = row.getAttribute('data-connection-id');
                     highlightConnection(connId);
                     row.classList.add('active-row');
+                    
+                    // Actualizar panel de información con los datos de la fila
+                    const origen = row.cells[1].innerText;
+                    const destino = row.cells[2].innerText;
+                    const funcion = row.cells[3].innerText;
+                    
+                    infoTitle.textContent = `${origen} ➡️ ${destino}`;
+                    infoDesc.textContent = funcion;
+                    
+                    // Colorear el título según el badge de la categoría
+                    const wire = document.querySelector(`.wire-line[data-connection-id="${connId}"]`);
+                    if (wire) {
+                        infoTitle.style.color = window.getComputedStyle(wire).stroke;
+                    }
                 });
 
                 row.addEventListener('mouseleave', () => {
@@ -973,7 +1115,7 @@
                 });
             });
 
-            // Hover en el SVG -> Activa Tabla (Solo resalta, no desplaza)
+            // Hover en el SVG -> Activa Tabla y el info-panel
             svgWires.forEach(wire => {
                 wire.addEventListener('mouseenter', () => {
                     const connId = wire.getAttribute('data-connection-id');
@@ -983,6 +1125,15 @@
                     const targetRow = document.querySelector(`tr[data-connection-id="${connId}"]`);
                     if (targetRow) {
                         targetRow.classList.add('active-row');
+                        
+                        // Extraer detalles de la fila
+                        const origen = targetRow.cells[1].innerText;
+                        const destino = targetRow.cells[2].innerText;
+                        const funcion = targetRow.cells[3].innerText;
+                        
+                        infoTitle.textContent = `${origen} ➡️ ${destino}`;
+                        infoDesc.textContent = funcion;
+                        infoTitle.style.color = window.getComputedStyle(wire).stroke;
                     }
                 });
 
@@ -991,12 +1142,11 @@
                     tableRows.forEach(row => row.classList.remove('active-row'));
                 });
 
-                // Clic en el SVG -> Desplaza suavemente y enfoca en la tabla
+                // Clic en el SVG -> Desplaza suavemente y enfoca la fila
                 wire.addEventListener('click', () => {
                     const connId = wire.getAttribute('data-connection-id');
                     const targetRow = document.querySelector(`tr[data-connection-id="${connId}"]`);
                     if (targetRow) {
-                        // Limpiar filas resaltadas anteriores
                         tableRows.forEach(row => row.classList.remove('active-row'));
                         targetRow.classList.add('active-row');
                         targetRow.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1007,7 +1157,6 @@
             function highlightConnection(id) {
                 if (!id) return;
                 
-                // Opacar todos los cables excepto el seleccionado
                 svgWires.forEach(wire => {
                     if (wire.getAttribute('data-connection-id') === id) {
                         wire.classList.add('active-connection');
@@ -1020,17 +1169,18 @@
             }
 
             function resetHighlights() {
-                // Volver a la normalidad (quitar opacidad y quitar brillo)
                 svgWires.forEach(wire => {
                     wire.classList.remove('dimmed');
                     wire.classList.remove('active-connection');
                 });
+                infoTitle.textContent = "💡 Información de Conexión";
+                infoDesc.textContent = "Pasa el cursor sobre cualquiera de los cables de colores en el esquema o haz clic para centrar la fila correspondiente en la tabla.";
+                infoTitle.style.color = "var(--pow-ext-color)";
             }
 
-            // --- 2. LÓGICA DE FILTROS RÁPIDOS ---
+            // --- 2. LÓGICA DE FILTROS ---
             filterButtons.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // Actualizar botón activo
                     filterButtons.forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
 
@@ -1040,26 +1190,31 @@
             });
 
             function applyFilter(type) {
-                // Filtro en la tabla
                 tableRows.forEach(row => {
                     const rowCat = row.getAttribute('data-category');
-                    if (type === 'all' || rowCat === type || (type === 'power' && rowCat === 'gnd') || (type === 'gnd' && rowCat === 'power')) {
+                    
+                    if (type === 'all') {
+                        row.style.display = '';
+                    } else if (type === 'power' && (rowCat === 'power' || rowCat === 'gnd')) {
+                        row.style.display = '';
+                    } else if (type === 'gnd' && rowCat === 'gnd') {
+                        row.style.display = '';
+                    } else if (rowCat === type) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
                     }
                 });
 
-                // Filtro en el SVG (opacar los que no corresponden al filtro)
+                // Cambiar opacidad de los cables según el filtro
                 if (type === 'all') {
                     svgWires.forEach(w => w.classList.remove('dimmed'));
                 } else {
                     svgWires.forEach(w => {
                         const wireClass = w.classList;
-                        
-                        // Determinar si el cable corresponde al filtro
                         let matches = false;
-                        if (type === 'power' && (wireClass.contains('power') || wireClass.contains('gnd'))) matches = true;
+                        
+                        if (type === 'power' && (wireClass.contains('power') || wireClass.contains('powext') || wireClass.contains('gnd'))) matches = true;
                         else if (type === 'gnd' && wireClass.contains('gnd')) matches = true;
                         else if (type === 'uart' && wireClass.contains('uart')) matches = true;
                         else if (type === 'joy' && wireClass.contains('joy')) matches = true;
@@ -1078,7 +1233,7 @@
             searchBox.addEventListener('input', (e) => {
                 const text = e.target.value.toLowerCase();
                 
-                // Desactivar filtros activos de botones
+                // Desactivar filtros activos
                 filterButtons.forEach(b => b.classList.remove('active'));
                 document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
                 
@@ -1091,7 +1246,6 @@
                     }
                 });
 
-                // Si hay texto, opacar todo el SVG excepto lo que coincida con las filas visibles
                 if (text === '') {
                     svgWires.forEach(w => w.classList.remove('dimmed'));
                 } else {
