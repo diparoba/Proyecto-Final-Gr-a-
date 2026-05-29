@@ -73,6 +73,12 @@ int velocidadActualCarro = 0;
 int velocidadActualGiro = 0;
 int velocidadActualElev = 0;
 
+// Variables para rastrear los últimos estados de movimiento en los logs
+String ultimoEstadoCarroLog = "DETENIDO";
+String ultimoEstadoGiroLog = "DETENIDO";
+String ultimoEstadoElevLog = "DETENIDO";
+
+
 // ==== VARIABLES DE TELEMETRÍA (FÍSICA VIRTUAL) ====
 float posCarro = 0.0;          // Posición estimada del carro (0 a 30.0 cm)
 float posElev = 0.0;           // Altura estimada del gancho (0 a 50.0 cm)
@@ -361,6 +367,26 @@ void loop() {
 
   // Determinar modo de control para telemetría
   String modoTelemetria = controlWebActivo ? "WEB" : "JOYSTICK";
+
+  // Log de movimientos en modo Joystick ante transiciones de estado
+  if (!controlWebActivo) {
+    if (estadoCarro != ultimoEstadoCarroLog) {
+      ultimoEstadoCarroLog = estadoCarro;
+      debugSerial.print("[JOYSTICK] Moviendo Carro: ");
+      debugSerial.println(estadoCarro);
+    }
+    if (estadoElev != ultimoEstadoElevLog) {
+      ultimoEstadoElevLog = estadoElev;
+      debugSerial.print("[JOYSTICK] Moviendo Elevacion: ");
+      debugSerial.println(estadoElev);
+    }
+    if (estadoGiro != ultimoEstadoGiroLog) {
+      ultimoEstadoGiroLog = estadoGiro;
+      debugSerial.print("[JOYSTICK] Moviendo Giro: ");
+      debugSerial.println(estadoGiro);
+    }
+  }
+
 
   // 6. ENVIAR REPORTE SERIAL CADA 200MS HACIA LA LAPTOP POR USB
   if (ahora - ultimoReporteTelemetria >= INTERVALO_TELEMETRIA) {

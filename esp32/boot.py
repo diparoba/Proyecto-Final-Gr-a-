@@ -9,8 +9,8 @@ import sys
 import uselect
 
 # --- CONFIGURACIÓN DE WI-FI ---
-SSID = "TU_RED_WIFI"
-PASSWORD = "TU_CLAVE_WIFI"
+SSID = "MKLabBuilder_PVI"
+PASSWORD = "Eurek@5019"
 
 # --- CONFIGURACIÓN ACCESS POINT FALLBACK ---
 AP_SSID = "ESP32-Grua-Setup"
