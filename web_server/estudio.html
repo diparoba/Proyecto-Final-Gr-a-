@@ -639,6 +639,9 @@
             <li class="nav-item" onclick="switchTab(5)">
                 <span>❓</span> Quiz y Repaso
             </li>
+            <li class="nav-item" onclick="window.location.href='cuestionario.html'">
+                <span>📝</span> Cuestionario
+            </li>
         </ul>
     </nav>
 
@@ -663,6 +666,9 @@
             <li class="bottom-item" onclick="switchTab(5)">
                 <span>❓</span><span>Repaso</span>
             </li>
+            <li class="bottom-item" onclick="window.location.href='cuestionario.html'">
+                <span>📝</span><span>Quiz</span>
+            </li>
         </ul>
     </nav>
 
@@ -673,6 +679,7 @@
             <div style="display: flex; align-items: center; gap: 12px;">
                 <a href="index.html" class="nav-btn" title="Volver al Panel de Control">🎮 Panel</a>
                 <a href="schema.html" class="nav-btn" title="Ver Esquema Electrónico">📋 Esquema</a>
+                <a href="cuestionario.html" class="nav-btn" title="Cuestionario de Estudio Interactivo">📝 Cuestionario</a>
                 <a href="presentacion.html" class="nav-btn" title="Ver Presentación de Exposición">📢 Presentación</a>
                 <button id="themeToggle" class="theme-toggle-btn" title="Alternar tema claro/oscuro">🌙</button>
             </div>
@@ -1068,6 +1075,14 @@ Nano TX (5V) ----[ R1: 1kΩ ]----+---- GPIO 16 RX2 (3.3V)
 
         <!-- 6. PESTAÑA: QUIZ & REPASO -->
         <div id="panel-quiz" class="tab-panel">
+            <div class="card" style="border: 2px solid var(--accent-color); box-shadow: 0 0 15px var(--accent-glow); background: rgba(237, 226, 33, 0.03);">
+                <h2>📝 ¡Nuevo Cuestionario de Estudio Interactivo!</h2>
+                <p>Hemos preparado un **Study Hub de Cuestionario Interactivo** y un **Libro de Conceptos Mecatrónicos** completo para asegurar que no tengan problemas en su defensa de grado. Podrán escribir sus propias respuestas, autoevaluarse y ver sus puntajes acumulados en tiempo real.</p>
+                <div style="margin-top: 15px; display: flex; gap: 10px;">
+                    <a href="cuestionario.html" class="nav-btn" style="background: var(--accent-color); color: #0d173c; font-weight: bold; padding: 10px 24px; border: none; display: inline-flex; height: auto; border-radius: 20px; font-family: 'Poppins', sans-serif;">📝 Abrir Cuestionario de Estudio</a>
+                </div>
+            </div>
+
             <div class="card">
                 <h2>Cuestionario de Autoevaluación</h2>
                 <p>Respondan a las siguientes preguntas clave para verificar si están listos para la exposición grupal.</p>
@@ -1214,8 +1229,6 @@ Nano TX (5V) ----[ R1: 1kΩ ]----+---- GPIO 16 RX2 (3.3V)
                         <div class="feedback-box"></div>
                     </div>
                 </div>
-
-                </div>
             </div>
 
             <!-- Banco de Preguntas Teóricas y Retos Prácticos -->
@@ -1358,7 +1371,7 @@ Nano TX (5V) ----[ R1: 1kΩ ]----+---- GPIO 16 RX2 (3.3V)
                     <div class="bank-item" data-category="pruebas" style="border: 1px solid var(--border-color); border-radius: 10px; overflow: hidden;">
                         <div class="accordion-header" onclick="toggleAccordion(this)">🧪 [Teoría] ¿Cómo se verifican y validan los requisitos del proyecto usando "openspec"?</div>
                         <div class="accordion-content" style="display: none; padding: 20px; background: var(--code-bg);">
-                            <p style="margin: 0; line-height: 1.6; font-size: 14px;"><strong>Respuesta:</strong> OpenSpec es un framework de diseño por contratos. Valida de manera automatizada que los requerimientos definidos en las especificaciones funcionales (ej. pines asignados, límites lógicos de velocidad) coincidan estrictamente con los archivos implementados en el código y las guías. Se ejecuta con el comando `openspec validate <cambio>` en la terminal.</p>
+                            <p style="margin: 0; line-height: 1.6; font-size: 14px;"><strong>Respuesta:</strong> OpenSpec es un framework de diseño por contratos. Valida de manera automatizada que los requerimientos definidos en las especificaciones funcionales (ej. pines asignados, límites lógicos de velocidad) coincidan estrictamente con los archivos implementados en el código y las guías. Se ejecuta con el comando `openspec validate &lt;cambio&gt;` en la terminal.</p>
                         </div>
                     </div>
 
